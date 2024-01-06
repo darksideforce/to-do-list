@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron/simple'
 import pkg from './package.json'
+import path from "path";
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -58,6 +60,12 @@ export default defineConfig(({ command }) => {
         },
         // Use Node.js API in the Renderer process
         renderer: {},
+      }),
+      createSvgIconsPlugin({
+        // 指定目录
+        iconDirs: [path.resolve(process.cwd(), "src/icons")],
+        // 使用svg图标的格式
+        symbolId: "icon-[dir]-[name]",
       }),
     ],
     server: process.env.VSCODE_DEBUG && (() => {
