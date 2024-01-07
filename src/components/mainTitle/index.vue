@@ -1,13 +1,13 @@
 <template>
   <div class="main-title-root">
     <div class="left">
-      <SvgIcon name="setting" color="primary" size="large"></SvgIcon>
+      <SvgIcon name="setting" color="primary" width="large" height="large"></SvgIcon>
     </div>
     <div class="middle">
       <p>{{ titleMessage }}</p>
     </div>
     <div class="right">
-      <SvgIcon name="avatar" color="primary" size="large"></SvgIcon>
+      <SvgIcon name="avatar" color="primary" width="large" height="large"></SvgIcon>
     </div>
   </div>
 </template>

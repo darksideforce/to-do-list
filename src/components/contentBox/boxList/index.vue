@@ -1,6 +1,6 @@
 <template>
   <div class="boxlist-root">
-    <BoxItem v-for="item in list" :cardDetail="item"></BoxItem>
+    <BoxItem v-for="item,index in list" :cardDetail="item" :index="index" @cardClick="cardClick"></BoxItem>
 
   </div>
 </template>
@@ -16,10 +16,12 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
-    content: 'test',
+    desrciption: 'testContent',
+    content: 'testContent',
     drift: 10,
     scale: 0.79,
+    title:'test大标题',
+    misstionType:'dev'
   },
   {
     type: 'error',
@@ -78,6 +80,9 @@ const list: cardBoxItem[] = reactive([
     scale: 1,
   },
 ])
+const emit = defineEmits<{
+  cardClick:[index:Number]
+}>()
 const data = reactive({})
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
@@ -87,16 +92,16 @@ onMounted(() => {
 })
 watchEffect(() => {
 })
-// 使用toRefs解构
-// let { } = { ...toRefs(data) } 
-defineExpose({
-  ...toRefs(data)
-})
+const cardClick = (e:Number)=>{
+  console.log(`监听到点击事件`)
+  console.log(`e=${JSON.stringify(e)}`)
+  emit('cardClick',e)
+}
 
 </script>
 <style scoped lang='less'>
 .boxlist-root {
-  position: relative;
+
   width: 100%;
   height: 100%;
 }

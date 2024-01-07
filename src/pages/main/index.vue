@@ -43,8 +43,8 @@ defineExpose({
   align-items: center;
   box-sizing: border-box;
   padding-top: 10px;
-  padding-left: 40px;
-  padding-right: 40px;
+  // padding-left: 40px;
+  // padding-right: 40px;
 }
 
 .title {
@@ -57,5 +57,6 @@ defineExpose({
   flex: 1;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 </style>

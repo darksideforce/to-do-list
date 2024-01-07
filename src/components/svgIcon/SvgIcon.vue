@@ -1,9 +1,9 @@
 <template>
     <svg
-      :style="{ width: sizeRef + 'px', height: sizeRef + 'px' }"
+      :style="{ width: widthRef + 'px', height: heightRef + 'px' }"
       class="svg-icon-wrapper"
     >
-      <use :xlink:href="prefix + name" :fill="colorRef"></use>
+      <use :xlink:href="prefix + name" ></use>
     </svg>
   </template>
   
@@ -33,7 +33,8 @@
       /** icon 的颜色 */
       color?: IconColor;
       /** icon 的尺寸 */
-      size?: IconSize | number;
+      width?: IconSize | number;
+      height?:IconSize | number
     }>(),
     {
       prefix: "#icon-",
@@ -60,11 +61,17 @@
     return colorMap[props.color] || props.color;
   });
   
-  const sizeRef = computed(() => {
-    if (typeof props.size === "string") {
-      return sizeMap[props.size];
+  const widthRef = computed(() => {
+    if (typeof props.width === "string") {
+      return sizeMap[props.width];
     }
-    return props.size;
+    return props.width;
+  });
+  const heightRef = computed(() => {
+    if (typeof props.height === "string") {
+      return sizeMap[props.height];
+    }
+    return props.height;
   });
   </script>
   
