@@ -33,14 +33,14 @@ const props = defineProps({
 })
 let {rateNumber,isEdit} = reactive({props}).props
 let rateNumberEditable = ref(rateNumber)
-const svgName = (number)=>{
+const svgName = (number:number)=>{
     // console.log(`number=${number},rateNumber=${rateNumberEditable}`)
     if(number > rateNumberEditable.value){
         return fillMap[0]
     }
     return fillMap[rateNumberEditable.value] 
 }
-const mouseEnterCardItem = (e)=>{
+const mouseEnterCardItem = (e:any)=>{
     // console.log(rateNumberEditable)
     if(isEdit){
         rateNumberEditable.value = parseInt(e)
@@ -51,7 +51,7 @@ const mouseLeaveCardItem = () =>{
         rateNumberEditable.value = rateNumber
     }
 }
-const handleClickRateDecide = (e)=>{
+const handleClickRateDecide = (e:number)=>{
     if(isEdit){
         rateNumber = e
     }

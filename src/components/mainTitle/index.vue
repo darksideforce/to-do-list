@@ -6,30 +6,39 @@
     <div class="middle">
       <p>{{ titleMessage }}</p>
     </div>
-    <div class="right">
-      <SvgIcon name="avatar" color="primary" width="large" height="large"></SvgIcon>
+    <div class="right" @click="handleclickToAdd">
+      <SvgIcon :name="type?'add':'close'" color="primary" width="large" height="large"></SvgIcon>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ titleMessage: string }>()
+
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+const emit = defineEmits<{
+  titleClick: [type:boolean]
+}>()
+defineProps<{ titleMessage: string }>()
 /**
 * 数据部分
 */
-const data = reactive({})
+const type = ref(true)
 onBeforeMount(() => {
 
 })
 onMounted(() => {
 
 })
-watchEffect(() => {
-})
-defineExpose({
-  ...toRefs(data)
-})
+const handleclickToAdd = ()=>{
+  if(type.value){
+    type.value = false
+    emit('titleClick',type.value)
+  }
+  else{
+    type.value = true
+    emit('titleClick',type.value)
+  }
+}
 
 </script>
 <style scoped lang='less'>

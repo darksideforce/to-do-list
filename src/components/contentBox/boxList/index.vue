@@ -101,7 +101,8 @@ const cardClick = (e:Number)=>{
 </script>
 <style scoped lang='less'>
 .boxlist-root {
-
+  position: relative;
+  top: 30px;
   width: 100%;
   height: 100%;
 }

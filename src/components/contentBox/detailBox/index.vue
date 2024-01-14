@@ -39,6 +39,12 @@
         </div>
         <div class="card-detail-info"> detail</div>
       </section>
+      <section class="textlist-section">
+        <div class="text-list-logobox">
+          <SvgIcon name="customer" color="primary" width="large" height="large"></SvgIcon>
+        </div>
+        <div class="card-detail-info"> people</div>
+      </section>
     </div>
   </div>
 </template>
@@ -84,7 +90,7 @@ const handleClickCardToClose = () => {
 
 .regular-box {
   width: 330px;
-  height: 700px;
+  height: 750px;
   display: flex;
   flex-direction: column;
   top: 40px;
@@ -182,9 +188,10 @@ const handleClickCardToClose = () => {
   box-sizing: border-box;
   display: flex;
   flex: 1;
-  padding: 10px 40px;
+  padding: 10px 40px 0px;
   flex-direction: column;
   overflow-y: scroll;
+  margin-bottom: 10px;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -199,11 +206,12 @@ const handleClickCardToClose = () => {
   .textlist-section {
     margin-top: 10px;
     height: max-content(170px);
-    
+
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     flex-direction: row;
+
     // height: min-content;
     .card-detail-info {
       min-height: 80px;
