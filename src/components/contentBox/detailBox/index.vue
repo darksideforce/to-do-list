@@ -61,6 +61,7 @@ const emit = defineEmits<{
 // const data = reactive({})
 let showDetailBox = ref(true)
 const messionType = ref('dev-background').value
+//控制卡片隐藏动画
 const computedClass = computed(() => {
   return showDetailBox.value === true ? 'detail-box-root regular-box' : 'detail-box-root none-box'
 })

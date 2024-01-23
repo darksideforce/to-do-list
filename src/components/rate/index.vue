@@ -20,7 +20,7 @@ const fillMap:Record<number,string> = {
     4:'rate-star-warning',
     5:'rate-star-danger  '
 }
-const list = [1,2,3,4,5]
+const list:number[] = [1,2,3,4,5]
 const props = defineProps({
     isEdit:{
         type:Boolean,

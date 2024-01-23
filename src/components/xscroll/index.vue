@@ -18,7 +18,6 @@
   function handleChange(size:any) { // 通过 v-size-ob 指令的返回值获取 container 的大小
     s.w = size.width;
     s.h = size.height;
-    console.log(s)
   }
   </script>
   

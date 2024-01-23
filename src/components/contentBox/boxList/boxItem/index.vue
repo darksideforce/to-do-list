@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
-import { cardBoxItem } from '../../type'
+import { cardBoxItem } from '../../../../type/missionType/index'
 const props = defineProps({
   cardDetail: {
     type: Object,
@@ -30,8 +30,6 @@ const emit = defineEmits<{
   cardClick:[index:Number]
 }>()
 const { cardDetail ,index} = reactive({ props }).props
-//避免渲染重复
-// const defaulDetail = JSON.parse(JSON.stringify(cardDetail))
 let move = ref('0%')
 const computedStyle = computed(() => {
   let styles: any = {}
@@ -41,8 +39,8 @@ const computedStyle = computed(() => {
   styles.marginLeft = - (220 * cardDetail.scale /2) + 'px'
   return styles
 })
+//动态类名，根据是否鼠标悬浮来改变
 const computedClass = computed(()=>{
-  console.log(`index=${index},result=${index === 0}`)
   return index === 7?'box-item-root':'box-item-root springBox'
 })
 onBeforeMount(() => {
@@ -59,8 +57,7 @@ const mouseEnterCardItem = (e: any) => {
 }
 const mouseLeaveCardItem = (e: any) => {
   console.log(`mouse leave = ${JSON.stringify(e)}`)
-  // cardDetail.scale = defaulDetail.scale
-  // cardDetail.drift = defaulDetail.drift
+
   move.value = '0%'
 }
 const handleClickCardToDetail = ()=>{

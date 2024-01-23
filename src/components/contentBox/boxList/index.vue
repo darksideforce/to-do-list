@@ -1,12 +1,11 @@
 <template>
   <div class="boxlist-root">
     <BoxItem v-for="item,index in list" :cardDetail="item" :index="index" @cardClick="cardClick"></BoxItem>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { cardBoxItem } from '../type'
+import { cardBoxItem } from '../../../type/missionType/index'
 import BoxItem from './boxItem/index.vue'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 /**
@@ -16,17 +15,17 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'testContent',
+    descripiton: 'testContent',
     content: 'testContent',
     drift: 10,
     scale: 0.79,
     title:'test大标题',
-    misstionType:'dev'
+    missionType:'dev'
   },
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 25,
     scale: 0.82,
@@ -34,7 +33,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 40,
     scale: 0.85,
@@ -42,7 +41,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 55,
     scale: 0.88,
@@ -50,7 +49,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 70,
     scale: 0.91,
@@ -58,7 +57,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 85,
     scale: 0.94,
@@ -66,7 +65,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 100,
     scale: 0.97,
@@ -74,7 +73,7 @@ const list: cardBoxItem[] = reactive([
   {
     type: 'error',
     time: 100,
-    desrciption: 'test',
+    descripiton: 'test',
     content: 'test',
     drift: 115,
     scale: 1,

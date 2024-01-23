@@ -6,13 +6,13 @@
     <div class="choosen-list">
       <xscroll class="xcroll">
         <div class="inner">
-          <div class="type-choosen-item">
-          </div>
-          <div class="type-choosen-item">
-          </div>
-          <div class="type-choosen-item">
-          </div>
-          <div class="type-choosen-item">
+          <div :class="item.typeName === selectedIndex ? 'type-choosen-item selected' : 'type-choosen-item unselected'"
+            v-for="item in typeList" @click="handleclickTypeChoosen(item)">
+            <SvgIcon :name="item.typeSvg" color="primary" :width="180" :height="180"></SvgIcon>
+            <div class="text">
+              <span class="type-title">{{ item.typeName }}</span>
+              <span class="type-description">{{ item.typeDesrciption }}</span>
+            </div>
           </div>
         </div>
       </xscroll>
@@ -24,10 +24,23 @@
 <script setup lang="ts">
 import xscroll from '../../../xscroll/index.vue'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { typeitem } from '../../../../type/missionType';
 /**
 * 数据部分
 */
-const data = reactive({})
+
+const typeList: typeitem[] = reactive([
+  { typeName: '开发', typeDesrciption: '开发，bug单，demo等事务', typeSvg: 'dev-background' },
+  { typeName: '文档', typeDesrciption: '上架文档，更新文档', typeSvg: 'document-background' },
+  { typeName: 'IO', typeDesrciption: '工作电子流，请加权限等处理', typeSvg: 'io-background' },
+  { typeName: '会议', typeDesrciption: '设计串讲showcase等', typeSvg: 'meeting-background' },
+  { typeName: '第三方', typeDesrciption: '第三方bug，或者问题验证', typeSvg: 'thirdparty-background' },
+])
+const selectedIndex = ref('未选中')
+
+const handleclickTypeChoosen = (e: typeitem) => {
+  selectedIndex.value = e.typeName
+}
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
@@ -39,29 +52,28 @@ watchEffect(() => {
 // 使用toRefs解构
 // let { } = { ...toRefs(data) } 
 defineExpose({
-  ...toRefs(data)
 })
 
 </script>
 <style scoped lang='less'>
 .type-choosen-root {
   width: 100%;
-  height: 330px;
+  height: 354px;
+  margin-bottom: 20px;
+
+  .choosen-header {
+    font-weight: regular;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.9);
+    margin-bottom: 10px;
+  }
 
   .choosen-list {
     width: 300px;
     position: relative;
-    // box-sizing: border-box;
+
     height: 330px;
-    // display: flex;
-    // // align-items: center;
-    // // justify-content: flex-start;
-    // flex-wrap: nowrap;
-    // overflow-x: scroll;
-    // overflow-y: hidden;
-    // flex-shrink: 0;
-    // flex-basis: 180px;
-    // white-space: nowrap;
+
 
     &::-webkit-scrollbar {
       display: none;
@@ -75,9 +87,49 @@ defineExpose({
       height: 300px;
       margin-right: 10px;
       flex-shrink: 0;
+      box-sizing: border-box;
+
+      .text {
+        padding: 10px;
+        box-sizing: border-box;
+        flex: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+
+        .type-title {
+          font-weight: bold;
+          font-size: 22px;
+        }
+
+        .type-description {
+          margin-top: 10px;
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.35);
+        }
+      }
+    }
+
+    .selected {
+      position: relative;
+    }
+
+    .selected ::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      border: 2px solid green;
+      top: 0;
+      left: 0;
+      border-radius: 20px;
+      box-sizing: border-box;
     }
   }
-  .inner{
+
+  .inner {
     padding: 10px 5px;
     display: flex;
     flex-direction: row;
