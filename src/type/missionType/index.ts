@@ -18,6 +18,7 @@ interface cardBoxItem {
   drift: number,
   scale: number,
   title?: string,
-  missionType?: missionType
+  missionType?: missionType,
+  star?:number
 }
 export type { missionType, missionTypeName, typeSvgIcon, typeitem ,cardBoxItem}

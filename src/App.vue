@@ -4,7 +4,6 @@ import Main from './pages/main/index.vue'
 
 <template>
   <div>
-    
     <Main ></Main>
   </div>
 </template>

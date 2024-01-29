@@ -20,7 +20,7 @@ const list: cardBoxItem[] = reactive([
     drift: 10,
     scale: 0.79,
     title:'test大标题',
-    missionType:'dev'
+    missionType:'dev',
   },
   {
     type: 'error',
