@@ -1,31 +1,62 @@
 <template>
   <div class="add-name-root">
     <span>{{ inputName }}</span>
-    <q-input v-model="text" :dense="false" v-if="inputType === 'single'"/>
-    <q-input v-if="inputType === 'multiple'" v-model="text" filled type="textarea" class="text-area" />
+    <q-input v-model="text" :dense="false" v-if="inputType === 'single'" :rules="rules" />
+    <q-input v-if="inputType === 'multiple'" v-model="text" filled type="textarea" class="text-area" :rules="rules" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { ValidationRule } from 'quasar';
+import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, Ref, watch, PropType } from 'vue';
+import { rulesMap } from '../../../../type/missionType/config'
 /**
 * 数据部分
 */
-const props = defineProps({
-  inputName: {
-    type: String,
-    default: ''
-  },
-  inputValue: {
-    type: String,
-    default: ''
-  },
-  inputType: {
-    type: String,
-    default: 'single'
-  }
+const emit = defineEmits(['update:inputValue'])
+interface Props {
+  inputName?: string,
+  inputValue?: string,
+  inputType?: string,
+  rules?: ValidationRule[]
+}
+const props = withDefaults(defineProps<Props>(), {
+  inputName: '',
+  inputValue: '',
+  inputType: 'single',
 })
-const text = ref('')
+// const props = defineProps({
+//   inputName: {
+//     type: String,
+//     default: ''
+//   },
+//   inputValue: {
+//     type: String,
+//     default: ''
+//   },
+//   inputType: {
+//     type: String,
+//     default: 'single'
+//   },
+//   rules: {
+//     type: String,
+//     default: 'title'
+//   }
+// })
+
+
+const text: Ref<string> = ref('')
+watch(() => props.inputValue, () => {
+  text.value = props.inputValue;
+}, {
+  immediate: true
+})
+watch(() => text.value, () => {
+  console.log(`textvalue detached`)
+  emit('update:inputValue', text.value)
+}, {
+  immediate: true
+})
 </script>
 <style scoped lang='less'>
 .add-name-root {

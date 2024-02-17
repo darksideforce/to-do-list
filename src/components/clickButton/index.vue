@@ -14,6 +14,10 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed 
 */
 const data = reactive({})
 const clickButton = ref(null)
+const emit = defineEmits<{
+  submitClick: []
+}>()
+
 let buttonAnimation = ref(false)
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
@@ -30,8 +34,8 @@ watchEffect(() => {
 defineExpose({
   ...toRefs(data)
 })
-const handleClickSubmit = (e) => {
-  console.log(!buttonAnimation)
+//增加样式部分,点击增加气泡
+const handleClickSubmit = (e:any) => {
   if (!buttonAnimation.value) {
     buttonAnimation.value = true
     let x = e.offsetX//e.x - e.target.offsetLeft
@@ -47,7 +51,8 @@ const handleClickSubmit = (e) => {
       buttonAnimation.value = false
     }, 500);
   }
-
+  emit('submitClick')
+  
 }
 </script>
 <style  lang='less'>

@@ -6,7 +6,7 @@
     <div class="choosen-list">
       <xscroll class="xcroll">
         <div class="inner">
-          <div :class="item.typeName === selectedIndex ? 'type-choosen-item selected' : 'type-choosen-item unselected'"
+          <div :class="item.typeName === selectedValue ? 'type-choosen-item selected' : 'type-choosen-item unselected'"
             v-for="item in typeList" @click="handleclickTypeChoosen(item)">
             <SvgIcon :name="item.typeSvg" color="primary" :width="180" :height="180"></SvgIcon>
             <div class="text">
@@ -23,28 +23,41 @@
 
 <script setup lang="ts">
 import xscroll from '../../../xscroll/index.vue'
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, watch } from 'vue';
 import { typeitem } from '../../../../type/missionType';
+import { addTypeList } from '../../../../type/missionType/config'
 /**
 * 数据部分
 */
-
-const typeList: typeitem[] = reactive([
-  { typeName: '开发', typeDesrciption: '开发，bug单，demo等事务', typeSvg: 'dev-background' },
-  { typeName: '文档', typeDesrciption: '上架文档，更新文档', typeSvg: 'document-background' },
-  { typeName: 'IO', typeDesrciption: '工作电子流，请加权限等处理', typeSvg: 'io-background' },
-  { typeName: '会议', typeDesrciption: '设计串讲showcase等', typeSvg: 'meeting-background' },
-  { typeName: '第三方', typeDesrciption: '第三方bug，或者问题验证', typeSvg: 'thirdparty-background' },
-])
-const selectedIndex = ref('未选中')
+const emit = defineEmits(['update:type'])
+const props = defineProps({
+  type: {
+    type: String,
+    default: ''
+  }
+})
+const typeList: typeitem[] = reactive(addTypeList)
+const selectedValue = ref('未选中')
 
 const handleclickTypeChoosen = (e: typeitem) => {
-  selectedIndex.value = e.typeName
+  selectedValue.value = e.typeName
 }
+watch(() => props.type, () => {
+  selectedValue.value = props.type;
+  emit('update:type', selectedValue.value)
+}, {
+  immediate: true
+})
+watch(() => selectedValue.value, () => {
+  emit('update:type', selectedValue.value)
+}, {
+  immediate: true
+})
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
 onMounted(() => {
+  console.log(typeList)
   //console.log('3.-组件挂载到页面之后执行-------onMounted')
 })
 watchEffect(() => {

@@ -2,13 +2,14 @@
   <div class="add-page-root">
     <div class="add-page-content">
       <p class="add-page-title">新增事务</p>
-      <inputchoosen inputName="请输入事务名称"></inputchoosen>
-      <typechoosen></typechoosen>
-      <datechoosen></datechoosen>
-      <inputchoosen inputName="请输入对接人"></inputchoosen>
-      <inputchoosen inputName="请输入关联链接"></inputchoosen>
-      <inputchoosen inputName="请输入详细细节" input-type="multiple"></inputchoosen>
-      <clickButton class="submitbutton" @click="handleclickSubmit">
+      <inputchoosen inputName="请输入事务名称" v-model:inputValue="projectObject.title" :rules="rulesMap.title"></inputchoosen>
+      <typechoosen v-model:type="projectObject.missionType"></typechoosen>
+      <datechoosen v-model:time="projectObject.time"></datechoosen>
+      <inputchoosen inputName="请输入对接人" v-model:inputValue="projectObject.relate" :rules="rulesMap.relate"></inputchoosen>
+      <inputchoosen inputName="请输入关联链接" v-model:inputValue="projectObject.link" :rules="rulesMap.link"></inputchoosen>
+      <inputchoosen inputName="请输入详细细节" input-type="multiple" v-model:inputValue="projectObject.descripiton" :rules="rulesMap.descripiton">
+      </inputchoosen>
+      <clickButton class="submitbutton" @submit-click="handleclickSubmit">
         <SvgIcon name="sumbit" color="warn" :width="100" :height="100">
         </SvgIcon>
         <div class="sumbitButton-text">
@@ -27,12 +28,20 @@ import clickButton from '../clickButton/index.vue'
 
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { missTypeObject } from '../../type/missionType';
+import { rulesMap } from '../../type/missionType/config'
 /**
 * 数据部分
 */
-let projectObject = reactive({
-  type: '',
+let projectObject: missTypeObject = reactive({
   time: '',
+  descripiton: '',
+  content: '',
+  title: '',
+  missionType: 'dev',
+  star: 0,
+  link: '',
+  relate: ''
 })
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
@@ -42,8 +51,8 @@ onMounted(() => {
 })
 watchEffect(() => {
 })
-const handleclickSubmit = ()=>{
-  console.log(`提交了`)
+const handleclickSubmit = () => {
+  console.log(projectObject)
 }
 
 </script>
@@ -92,5 +101,4 @@ const handleclickSubmit = ()=>{
   font-weight: bold;
   user-select: none;
 }
-
 </style>
