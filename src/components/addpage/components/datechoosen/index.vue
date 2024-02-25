@@ -3,7 +3,7 @@
     <div class="choosen-header">
       <span>请选择完成日期</span>
     </div>
-    <q-input  v-model="time" mask="date" :rules="['date']" :dense="false">
+    <q-input v-model="time" mask="date" :rules=rules :dense="false" ref="inputRef">
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -24,23 +24,27 @@
 </template>
 
 <script setup lang="ts">
+import { ValidationRule } from 'quasar';
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, watch } from 'vue';
 /**
 * 数据部分
 */
+interface Props {
+  time: string,
+  rules?: ValidationRule[]
+}
 const emit = defineEmits(['update:time'])
-const props = defineProps({
-  time: {
-    type: String,
-    default: ''
-  },
-
+const props = withDefaults(defineProps<Props>(), {
+  time: ''
 })
+
 const time = ref('')
 let dateDialogShow = ref(false)
+const inputRef: any = ref(null)
 const handClickOpenDate = () => {
   dateDialogShow.value = !dateDialogShow.value
 }
+
 watch(() => props.time, () => {
   time.value = props.time;
 }, {
@@ -51,7 +55,24 @@ watch(() => time.value, () => {
 }, {
   immediate: true
 })
-
+let checkValidate = async () => {
+  return new Promise((resolve, reject) => {
+    inputRef.value.validate()
+    if (!inputRef.value.hasError) {
+      resolve(true)
+    }
+    else {
+      resolve(false)
+    }
+  })
+}
+let resetValidate = () => {
+  console.log('清除校验')
+}
+defineExpose({
+  checkValidate,
+  resetValidate
+})
 </script>
 <style scoped lang='less'>
 input {

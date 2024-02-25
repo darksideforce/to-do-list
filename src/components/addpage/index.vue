@@ -2,12 +2,16 @@
   <div class="add-page-root">
     <div class="add-page-content">
       <p class="add-page-title">新增事务</p>
-      <inputchoosen inputName="请输入事务名称" v-model:inputValue="projectObject.title" :rules="rulesMap.title"></inputchoosen>
-      <typechoosen v-model:type="projectObject.missionType"></typechoosen>
-      <datechoosen v-model:time="projectObject.time"></datechoosen>
-      <inputchoosen inputName="请输入对接人" v-model:inputValue="projectObject.relate" :rules="rulesMap.relate"></inputchoosen>
-      <inputchoosen inputName="请输入关联链接" v-model:inputValue="projectObject.link" :rules="rulesMap.link"></inputchoosen>
-      <inputchoosen inputName="请输入详细细节" input-type="multiple" v-model:inputValue="projectObject.descripiton" :rules="rulesMap.descripiton">
+      <inputchoosen inputName="请输入事务名称" v-model:inputValue="projectObject.title" :rules="rulesMap.title" ref="title">
+      </inputchoosen>
+      <typechoosen v-model:type="projectObject.missionType" :rules="rulesMap.type" ref="type"></typechoosen>
+      <datechoosen v-model:time="projectObject.time" :rules="rulesMap.date" ref="date"> </datechoosen>
+      <inputchoosen inputName="请输入对接人" v-model:inputValue="projectObject.relate" :rules="rulesMap.relate" ref="relate">
+      </inputchoosen>
+      <inputchoosen inputName="请输入关联链接" v-model:inputValue="projectObject.link" :rules="rulesMap.link" ref="link">
+      </inputchoosen>
+      <inputchoosen inputName="请输入详细细节" input-type="multiple" v-model:inputValue="projectObject.descripiton"
+        ref="descripiton" :rules="rulesMap.descripiton">
       </inputchoosen>
       <clickButton class="submitbutton" @submit-click="handleclickSubmit">
         <SvgIcon name="sumbit" color="warn" :width="100" :height="100">
@@ -30,6 +34,7 @@ import clickButton from '../clickButton/index.vue'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 import { missTypeObject } from '../../type/missionType';
 import { rulesMap } from '../../type/missionType/config'
+
 /**
 * 数据部分
 */
@@ -38,21 +43,44 @@ let projectObject: missTypeObject = reactive({
   descripiton: '',
   content: '',
   title: '',
-  missionType: 'dev',
+  missionType: '',
   star: 0,
   link: '',
   relate: ''
 })
+let title: any = ref(null)
+let type: any = ref(null)
+let date: any = ref(null)
+let relate: any = ref(null)
+let link: any = ref(null)
+let descripiton: any = ref(null)
+
 onBeforeMount(() => {
-  //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
 onMounted(() => {
-  //console.log('3.-组件挂载到页面之后执行-------onMounted')
 })
 watchEffect(() => {
 })
 const handleclickSubmit = () => {
-  console.log(projectObject)
+  Promise.all([
+    title.value.checkValidate(),
+    relate.value.checkValidate(),
+    date.value.checkValidate(),
+    link.value.checkValidate(),
+    type.value.checkValidate(),
+    descripiton.value.checkValidate()
+  ]).then(e=>{
+    console.log(e.indexOf(false))
+    if(e.indexOf(false) > -1){
+      console.log('校验失败')
+    }
+    else{
+      console.log('校验成功')
+    }
+  })
+
+
+
 }
 
 </script>
