@@ -23,6 +23,7 @@ defineProps<{ titleMessage: string }>()
 * 数据部分
 */
 const type = ref(true)
+const allowClick = ref(true)
 onBeforeMount(() => {
 
 })
@@ -38,6 +39,10 @@ const handleclickToAdd = ()=>{
     type.value = true
     emit('titleClick',type.value)
   }
+  allowClick.value = false
+  setTimeout(()=>{
+    allowClick.value = true
+  },300)
 }
 
 </script>

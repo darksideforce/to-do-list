@@ -2,7 +2,6 @@
   <div class="contentBox-root">
     <BoxList @card-click="cardClick"></BoxList>
     <detailBox v-if="showDetailBox" @detail-click="detailClick"></detailBox>
-
   </div>
 </template>
 

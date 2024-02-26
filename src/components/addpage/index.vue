@@ -1,5 +1,5 @@
 <template>
-  <div class="add-page-root">
+  <div :class="computedClass">
     <div class="add-page-content">
       <p class="add-page-title">新增事务</p>
       <inputchoosen inputName="请输入事务名称" v-model:inputValue="projectObject.title" :rules="rulesMap.title" ref="title">
@@ -38,6 +38,12 @@ import { rulesMap } from '../../type/missionType/config'
 /**
 * 数据部分
 */
+const props = defineProps({
+  showAddPage: {
+    type: Boolean,
+    default: false
+  }
+})
 let projectObject: missTypeObject = reactive({
   time: '',
   descripiton: '',
@@ -55,6 +61,9 @@ let relate: any = ref(null)
 let link: any = ref(null)
 let descripiton: any = ref(null)
 
+let computedClass = computed(() => { 
+  return props.showAddPage?'add-page-root show-box':'add-page-root dispear-box'
+})
 onBeforeMount(() => {
 })
 onMounted(() => {
@@ -69,12 +78,12 @@ const handleclickSubmit = () => {
     link.value.checkValidate(),
     type.value.checkValidate(),
     descripiton.value.checkValidate()
-  ]).then(e=>{
+  ]).then(e => {
     console.log(e.indexOf(false))
-    if(e.indexOf(false) > -1){
+    if (e.indexOf(false) > -1) {
       console.log('校验失败')
     }
-    else{
+    else {
       console.log('校验成功')
     }
   })
@@ -86,13 +95,12 @@ const handleclickSubmit = () => {
 </script>
 <style scoped lang='less'>
 .add-page-root {
-
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
+  position: absolute;
 
-  // align-items: center;
   .add-page-content {
     width: 400px;
     height: 750px;
@@ -121,12 +129,44 @@ const handleclickSubmit = () => {
     transform: translateX(-50%);
   }
 }
-
+.show-box{
+  top: 0;
+  left: 0;
+  animation: show-animation 0.3s linear 0s forwards;
+  display: show;
+}
+.dispear-box{
+  top: 0;
+  left: 0;
+  // display: none;
+  animation: none-animation 0.3s linear 0s forwards;
+  
+}
 .sumbitButton-text {
   margin-left: 20px;
   color: #fff;
   font-size: 25px;
   font-weight: bold;
   user-select: none;
+}
+
+@keyframes show-animation {
+  0% {
+    left: 100%;
+    
+  }
+
+  100% {
+    left: 0%;
+  }
+}
+@keyframes none-animation {
+  0%{
+    left: 0%;
+  }
+  100%{
+    left: 130%;
+    display: none;
+  }
 }
 </style>

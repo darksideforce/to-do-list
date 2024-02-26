@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <contentBox></contentBox>
-      <addpage v-if="showAddPage" class="add-pages"></addpage>
+      <addpage v-if="showAddPage" :showAddPage="animationController"></addpage>
     </div>
     <div class="footer"></div>
   </div>
@@ -23,6 +23,7 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed 
 */
 const data = reactive({})
 const showAddPage = ref(false)
+const animationController = ref(false)
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
@@ -36,9 +37,16 @@ watchEffect(() => {
 defineExpose({
   ...toRefs(data)
 })
-const handleclickAddTag = (e:boolean)=>{
-  console.log(`收到回调=${e}`)
-  showAddPage.value = e
+const handleclickAddTag = (e: boolean) => {
+  animationController.value = e
+  if (!e) {
+    setTimeout(() => {
+      showAddPage.value = e
+    }, 300)
+  }
+  else {
+    showAddPage.value = e
+  }
 }
 </script>
 <style scoped lang='less'>
@@ -51,8 +59,6 @@ const handleclickAddTag = (e:boolean)=>{
   align-items: center;
   box-sizing: border-box;
   padding-top: 10px;
-  // padding-left: 40px;
-  // padding-right: 40px;
 }
 
 .title {
@@ -60,16 +66,12 @@ const handleclickAddTag = (e:boolean)=>{
   height: 50px;
   position: fixed;
 }
-.content{
+
+.content {
   margin-top: 140px;
   flex: 1;
   width: 100%;
   height: 100%;
   position: relative;
-}
-.add-pages{
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 </style>
