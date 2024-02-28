@@ -30,6 +30,8 @@ import inputchoosen from './components/inputchoosen/index.vue'
 import datechoosen from './components/datechoosen/index.vue'
 import clickButton from '../clickButton/index.vue'
 
+import { ipcRenderer } from 'electron'
+
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 import { missTypeObject } from '../../type/missionType';
@@ -85,6 +87,7 @@ const handleclickSubmit = () => {
     }
     else {
       console.log('校验成功')
+      ipcRenderer.invoke('success-create-file',JSON.stringify(projectObject))
     }
   })
 

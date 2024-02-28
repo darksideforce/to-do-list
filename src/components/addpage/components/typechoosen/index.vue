@@ -43,15 +43,15 @@ const typeList: typeitem[] = reactive(addTypeList)
 let selectedValue = ref('')
 let selectedRoot = ref(true)
 const handleclickTypeChoosen = (e: typeitem) => {
-  checkValidate()
+  
   if(selectedValue.value !== e.type){
     selectedValue.value = e.type
   }
   else{
     selectedValue.value = ''
   }
+  checkValidate()
 }
-
 watch(() => props.type, () => {
   console.log(props.type)
   selectedValue.value = props.type;
@@ -69,6 +69,7 @@ let checkValidate = async () => {
   return new Promise((resolve, reject) => {
     if (selectedValue.value === '') {
       console.log('enter')
+      console.log(selectedValue.value)
       selectedRoot.value = false
       resolve(false)
     }
