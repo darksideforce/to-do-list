@@ -27,7 +27,7 @@
   "devDependencies": {
     "@quasar/vite-plugin": "^1.6.0",
     "@vitejs/plugin-vue": "^5.0.1",
-    "electron": "^28.1.0",
+    "electron": "^29.1.0",
     "electron-builder": "^24.9.1",
     "fast-glob": "^3.3.2",
     "tree-kill": "^1.2.2",
