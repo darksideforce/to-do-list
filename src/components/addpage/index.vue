@@ -72,6 +72,9 @@ onMounted(() => {
 })
 watchEffect(() => {
 })
+/**
+ * 校验当前添加任务配置项，交由进程部分来进行存储任务
+ */
 const handleclickSubmit = () => {
   Promise.all([
     title.value.checkValidate(),

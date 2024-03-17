@@ -52,11 +52,11 @@ onMounted(() => {
 watchEffect(() => {
 })
 const mouseEnterCardItem = (e: any) => {
-  console.log(`mouse move = ${JSON.stringify(e)}`)
+  // console.log(`mouse move = ${JSON.stringify(e)}`)
   move.value = '-10%'
 }
 const mouseLeaveCardItem = (e: any) => {
-  console.log(`mouse leave = ${JSON.stringify(e)}`)
+  // console.log(`mouse leave = ${JSON.stringify(e)}`)
 
   move.value = '0%'
 }

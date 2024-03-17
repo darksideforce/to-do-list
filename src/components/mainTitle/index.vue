@@ -7,7 +7,7 @@
       <p>{{ titleMessage }}</p>
     </div>
     <div class="right" @click="handleclickToAdd">
-      <SvgIcon :name="type?'add':'close'" color="primary" width="large" height="large"></SvgIcon>
+      <SvgIcon :name="type?'close':'add'" color="primary" width="large" height="large"></SvgIcon>
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ defineProps<{ titleMessage: string }>()
 /**
 * 数据部分
 */
-const type = ref(true)
+const type = ref(false)
 const allowClick = ref(true)
 onBeforeMount(() => {
 

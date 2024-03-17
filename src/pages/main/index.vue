@@ -38,6 +38,7 @@ defineExpose({
   ...toRefs(data)
 })
 const handleclickAddTag = (e: boolean) => {
+  console.log(`e=${e}`)
   animationController.value = e
   if (!e) {
     setTimeout(() => {
