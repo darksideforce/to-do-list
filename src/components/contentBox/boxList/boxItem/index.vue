@@ -100,4 +100,4 @@ const handleClickCardToDetail = ()=>{
     transform: translateY( 0%);
   }
 }
-</style>
+</style>../../../../type/missionAdd/index

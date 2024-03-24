@@ -30,7 +30,7 @@ interface cardBoxItem {
   missionType?: missionType,//类型
   star?: number,
 }
-//添加必传参数
+//添加的必传参数
 interface missTypeObject {
   time: string,
   descripiton: string,
@@ -46,6 +46,7 @@ interface selftRule {
   rule: any,
   tips: string,
 }
+//添加页面的参数校验
 interface ValidationRuleMap {
   title: ValidationRule[],
   missionType: ValidationRule[],

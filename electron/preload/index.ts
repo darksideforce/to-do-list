@@ -1,3 +1,6 @@
+// require { contextBridge ,ipcRenderer} from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
+// const { contextBridge, ipcRenderer } = require('electron')
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
@@ -83,5 +86,10 @@ domReady().then(appendLoading)
 window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
-
+contextBridge.exposeInMainWorld('electronAPI', {
+  createFile: (data) => ipcRenderer.send('create-file',data)
+})
+// contextBridge.exposeInMainWorld('electronAPI', {
+//   readFile: () => ipcRenderer.invoke('read-file')
+// })
 setTimeout(removeLoading, 4999)

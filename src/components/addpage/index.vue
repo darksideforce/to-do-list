@@ -30,12 +30,12 @@ import inputchoosen from './components/inputchoosen/index.vue'
 import datechoosen from './components/datechoosen/index.vue'
 import clickButton from '../clickButton/index.vue'
 
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
-import { missTypeObject } from '../../type/missionType';
-import { rulesMap } from '../../type/missionType/config'
+import { missTypeObject } from '../../type/missionAdd';
+import { rulesMap } from '../../type/missionAdd/config'
 
 /**
 * 数据部分
@@ -90,7 +90,9 @@ const handleclickSubmit = () => {
     }
     else {
       console.log('校验成功')
-      ipcRenderer.invoke('success-create-file',JSON.stringify(projectObject))
+      window.electronAPI.createFile(JSON.stringify(projectObject))
+      // console.log(window.electronAPI)
+      // ipcRenderer.invoke('success-create-file',JSON.stringify(projectObject))
     }
   })
 
@@ -175,4 +177,4 @@ const handleclickSubmit = () => {
     display: none;
   }
 }
-</style>
+</style>../../type/missionAdd../../type/missionAdd/config

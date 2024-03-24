@@ -105,4 +105,4 @@ const cardClick = (e:Number)=>{
   width: 100%;
   height: 100%;
 }
-</style>
+</style>../../../type/missionAdd/index

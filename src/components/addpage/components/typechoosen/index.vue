@@ -26,8 +26,8 @@
 <script setup lang="ts">
 import xscroll from '../../../xscroll/index.vue'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, watch } from 'vue';
-import { typeitem, selftRule } from '../../../../type/missionType';
-import { addTypeList } from '../../../../type/missionType/config'
+import { typeitem, selftRule } from '../../../../type/missionAdd';
+import { addTypeList } from '../../../../type/missionAdd/config'
 /**
 * 数据部分
 */
@@ -207,4 +207,4 @@ defineExpose({
     flex-direction: row;
   }
 }
-</style>
+</style>../../../../type/missionAdd../../../../type/missionAdd/config

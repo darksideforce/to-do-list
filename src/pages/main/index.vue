@@ -15,9 +15,10 @@
 import MainTitle from '../../components/mainTitle/index.vue'
 import contentBox from '../../components/contentBox/index.vue'
 import addpage from '../../components/addpage/index.vue'
-
+// import fs from 'node:fs'
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+// import { ipcRenderer } from 'electron';
 /**
 * 数据部分
 */
@@ -27,8 +28,8 @@ const animationController = ref(false)
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
-onMounted(() => {
-  //console.log('3.-组件挂载到页面之后执行-------onMounted')
+onMounted(async() => {
+  // console.log(fs)
 })
 watchEffect(() => {
 })
@@ -38,7 +39,6 @@ defineExpose({
   ...toRefs(data)
 })
 const handleclickAddTag = (e: boolean) => {
-  console.log(`e=${e}`)
   animationController.value = e
   if (!e) {
     setTimeout(() => {
