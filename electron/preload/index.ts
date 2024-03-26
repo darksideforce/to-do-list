@@ -87,7 +87,8 @@ window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
 contextBridge.exposeInMainWorld('electronAPI', {
-  createFile: (data) => ipcRenderer.send('create-file',data)
+  createFile: (data) => ipcRenderer.send('create-file',data),
+  readFile: () => ipcRenderer.invoke('read-file')
 })
 // contextBridge.exposeInMainWorld('electronAPI', {
 //   readFile: () => ipcRenderer.invoke('read-file')

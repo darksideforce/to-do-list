@@ -28,7 +28,10 @@ const animationController = ref(false)
 onBeforeMount(() => {
   //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
+
 onMounted(async() => {
+  const res = await (window as any).electronAPI.readFile()
+  console.log(res)
   // console.log(fs)
 })
 watchEffect(() => {

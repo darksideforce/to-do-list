@@ -89,8 +89,8 @@ const handleclickSubmit = () => {
       console.log('校验失败')
     }
     else {
-      console.log('校验成功')
-      window.electronAPI.createFile(JSON.stringify(projectObject))
+      console.log('校验成功');
+      (window as any).electronAPI.createFile(JSON.stringify(projectObject))
       // console.log(window.electronAPI)
       // ipcRenderer.invoke('success-create-file',JSON.stringify(projectObject))
     }
