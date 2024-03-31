@@ -1,100 +1,55 @@
 <template>
   <div class="boxlist-root">
-    <BoxItem v-for="item,index in list" :cardDetail="item" :index="index" @cardClick="cardClick"></BoxItem>
+    <BoxItem v-for="item, index in list" :cardDetail="item" :index="index" @cardClick="cardClick(item)"></BoxItem>
   </div>
 </template>
 
 <script setup lang="ts">
-import { cardBoxItem } from '../../../type/missionType/index'
+// import { cardBoxItem } from '../../../type/missionType/index'
+import { cardBoxItem } from '@/type/index';
+import { missTypeObject } from '@/type/missionAdd';
 import BoxItem from './boxItem/index.vue'
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed } from 'vue';
 /**
-* 数据部分
+* 数据部分,接受从父组件传入的数据
 */
-const list: cardBoxItem[] = reactive([
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'testContent',
-    content: 'testContent',
-    drift: 10,
-    scale: 0.79,
-    title:'test大标题',
-    missionType:'dev',
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 25,
-    scale: 0.82,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 40,
-    scale: 0.85,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 55,
-    scale: 0.88,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 70,
-    scale: 0.91,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 85,
-    scale: 0.94,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 100,
-    scale: 0.97,
-  },
-  {
-    type: 'error',
-    time: 100,
-    descripiton: 'test',
-    content: 'test',
-    drift: 115,
-    scale: 1,
-  },
-])
+interface propsType {
+  missionList: missTypeObject | any
+}
+const props = withDefaults(defineProps<propsType>(), {
+  missionList: []
+})
+
+let list: missTypeObject[] = reactive([])
+
 const emit = defineEmits<{
-  cardClick:[index:Number]
+  cardClick: [missionItem: missTypeObject],
 }>()
-const data = reactive({})
-onBeforeMount(() => {
-  //console.log('2.组件挂载页面之前执行----onBeforeMount')
+
+watch(() => props.missionList, (newvalue, oldvalue) => {
+  if (newvalue.length) {
+    list = operationList(props.missionList)
+  }
+}, {
+  deep: true
 })
-onMounted(() => {
-  //console.log('3.-组件挂载到页面之后执行-------onMounted')
-})
-watchEffect(() => {
-})
-const cardClick = (e:Number)=>{
-  console.log(`监听到点击事件`)
-  console.log(`e=${JSON.stringify(e)}`)
-  emit('cardClick',e)
+//方法，将传入的数组处理成展示用的列表
+const operationList = function (missionList: Array<missTypeObject | any>): missTypeObject[] {
+  const maxLength = 10
+  let array: any = []
+  let drift = 115
+  let scale = 1
+  for (let i in missionList as Array<missTypeObject>) {
+    array[i] = missionList[i]
+    array[i].drift = drift
+    array[i].scale = scale
+    drift -= 15
+    scale -= 0.03
+  }
+  return array.reverse()
+}
+const cardClick = (e: missTypeObject) => {
+  emit('cardClick', e)
 }
 
 </script>
@@ -105,4 +60,4 @@ const cardClick = (e:Number)=>{
   width: 100%;
   height: 100%;
 }
-</style>../../../type/missionAdd/index
+</style>

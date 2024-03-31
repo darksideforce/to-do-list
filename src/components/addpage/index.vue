@@ -30,7 +30,6 @@ import inputchoosen from './components/inputchoosen/index.vue'
 import datechoosen from './components/datechoosen/index.vue'
 import clickButton from '../clickButton/index.vue'
 
-// import { ipcRenderer } from 'electron'
 
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
@@ -54,7 +53,8 @@ let projectObject: missTypeObject = reactive({
   missionType: '',
   star: 0,
   link: '',
-  relate: ''
+  relate: '',
+  createTime:'',
 })
 let title: any = ref(null)
 let type: any = ref(null)
@@ -84,15 +84,13 @@ const handleclickSubmit = () => {
     type.value.checkValidate(),
     descripiton.value.checkValidate()
   ]).then(e => {
-    console.log(e.indexOf(false))
     if (e.indexOf(false) > -1) {
       console.log('校验失败')
     }
     else {
       console.log('校验成功');
+      projectObject.createTime = new Date().getTime();
       (window as any).electronAPI.createFile(JSON.stringify(projectObject))
-      // console.log(window.electronAPI)
-      // ipcRenderer.invoke('success-create-file',JSON.stringify(projectObject))
     }
   })
 

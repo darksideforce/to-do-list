@@ -26,13 +26,10 @@ const data = reactive({})
 const showAddPage = ref(false)
 const animationController = ref(false)
 onBeforeMount(() => {
-  //console.log('2.组件挂载页面之前执行----onBeforeMount')
 })
 
 onMounted(async() => {
-  const res = await (window as any).electronAPI.readFile()
-  console.log(res)
-  // console.log(fs)
+  //获取缓存的文件信息，并将其传入
 })
 watchEffect(() => {
 })
@@ -41,6 +38,8 @@ watchEffect(() => {
 defineExpose({
   ...toRefs(data)
 })
+
+//点击添加按钮
 const handleclickAddTag = (e: boolean) => {
   animationController.value = e
   if (!e) {
@@ -52,6 +51,7 @@ const handleclickAddTag = (e: boolean) => {
     showAddPage.value = e
   }
 }
+
 </script>
 <style scoped lang='less'>
 .main-page-root {

@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ValidationRule } from 'quasar';
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, Ref, watch, PropType } from 'vue';
-import { rulesMap } from '../../../../type/missionType/config'
+import { rulesMap } from '@/type';
 /**
 * 数据部分
 */

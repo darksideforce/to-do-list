@@ -9,6 +9,12 @@ const dateString = currentDate.toLocaleDateString('zh-CN');
 const [year, month, day] = dateString.split('/');
 const filePath = app.getAppPath() + '\\cache\\' + year + '-' + month + '-' + day //+ '.json'
 
+
+/**
+ * 生成随机文件名
+ * @param length 文件名长度
+ * @returns 返回生成的文件名
+ */
 const generaName =function (length) {
     const data =
       ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F",
@@ -23,6 +29,13 @@ const generaName =function (length) {
     return nums;
   }
 
+
+/**
+ * 创建文件
+ * @param event 
+ * @param message 文件内的文本 
+ * @returns 
+ */
 const createFile = async function (event, message: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -35,33 +48,14 @@ const createFile = async function (event, message: string): Promise<void> {
             console.error('create file error', e)
         }
     })
-    // fs.stat(filePath, (err, stats) => {
-    //     if (err) {
-    //         if (err.code === 'ENOENT') {
-    //             //没有目录则进行创建目录
-    //             console.log('folder not exist');
-    //             fs.mkdir(filePath, (err) => {
-    //                 if (err) {
-    //                     console.error(err);
-    //                 } else {
-    //                     console.log('create success or already exist');
-    //                     write(fileName, message)
-    //                 }
-    //             });
-    //         } else {
-    //             console.error('发生错误', err);
-    //         }
-    //     } else {
-    //         if (stats.isDirectory()) {
-    //             console.log('folder already exist');
-    //             write(fileName, message)
 
-    //         } else {
-    //             console.log('path/to/folder not the same folder');
-    //         }
-    //     }
-    // });
 }
+/**
+ * 写入
+ * @param filePath 文件路径 
+ * @param content 文件内容
+ * @returns 失败或成功
+ */
 const write = function (filePath: string, content: string = ''): Promise<Boolean> {
     return new Promise(async (resolve, reject) => {
         fs.writeFile(filePath, content, 'utf-8', (err) => {

@@ -4,11 +4,11 @@
       <SvgIcon name="arrow-left" color="primary" width="large" height="large" @click="handleClickCardToClose"></SvgIcon>
     </div>
     <div class="card-detail-photo">
-      <SvgIcon :name="messionType" color="primary" :width="330" :height="250"></SvgIcon>
+      <SvgIcon :name="missionDetail.missionType + '-background'" color="primary" :width="330" :height="250"></SvgIcon>
     </div>
     <div class="card-detail-infobox">
       <div class="card-detail-title">
-        text-title
+        {{ missionDetail.title }}
       </div>
       <div class="card-detail-star">
         <rate :rate-number="2"></rate>
@@ -24,26 +24,30 @@
           <SvgIcon name="link" color="primary" width="large" height="large"></SvgIcon>
         </div>
         <div class="card-detail-info">
-          https://www.bilibili.com/video/BV12C4y1u7gL/?spm_id_from=333.1007.tianma.1-1-1.click&vd_source=27558042a4d66743b53fc6b46b7a256a
+          {{ missionDetail.link }}
         </div>
       </section>
       <section class="textlist-section">
         <div class="text-list-logobox">
           <SvgIcon name="calendar" color="primary" width="large" height="large"></SvgIcon>
         </div>
-        <div class="card-detail-info"> date</div>
+        <div class="card-detail-info"> 
+          {{  missionDetail.date }}
+        </div>
       </section>
       <section class="textlist-section">
         <div class="text-list-logobox">
           <SvgIcon name="content" color="primary" width="large" height="large"></SvgIcon>
         </div>
-        <div class="card-detail-info"> detail</div>
+        <div class="card-detail-info"> 
+          {{ missionDetail.descripiton }}
+        </div>
       </section>
       <section class="textlist-section">
         <div class="text-list-logobox">
           <SvgIcon name="customer" color="primary" width="large" height="large"></SvgIcon>
         </div>
-        <div class="card-detail-info"> people</div>
+        <div class="card-detail-info"> {{ missionDetail.relate }}</div>
       </section>
     </div>
   </div>
@@ -52,15 +56,21 @@
 <script setup lang="ts">
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 import rate from '../../rate/index.vue'
+import { missTypeObject } from '@/type';
 /**
 * 数据部分
 */
+interface propsType {
+  missionDetail: missTypeObject | any
+}
+const props = withDefaults(defineProps<propsType>(), {
+  missionDetail: {
+  }
+})
 const emit = defineEmits<{
   detailClick: []
 }>()
-// const data = reactive({})
 let showDetailBox = ref(true)
-const messionType = ref('dev-background').value
 //控制卡片隐藏动画
 const computedClass = computed(() => {
   return showDetailBox.value === true ? 'detail-box-root regular-box' : 'detail-box-root none-box'

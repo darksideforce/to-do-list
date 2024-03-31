@@ -18,18 +18,7 @@ type typeitem = {
   typeSvg: typeSvgIcon,
   type:missionType
 }
-//翻页界面卡片的必传参数
-interface cardBoxItem {
-  type: 'error' | 'warning' | 'timeout' | 'timing',//任务时间
-  time: number,//时间
-  descripiton: string,//描述
-  content: string,//内容
-  drift: number,//位移值
-  scale: number,//缩放比例
-  title?: string,//title
-  missionType?: missionType,//类型
-  star?: number,
-}
+
 //添加的必传参数
 interface missTypeObject {
   time: string,
@@ -39,7 +28,8 @@ interface missTypeObject {
   missionType?: missionType,
   star?: number,
   relate?: string,
-  link?: string
+  link?: string,
+  createTime:Number | any,
 }
 
 interface selftRule {
@@ -63,7 +53,6 @@ export type {
   missionTypeName,
   typeSvgIcon,
   typeitem,
-  cardBoxItem,
   missTypeObject,
   ValidationRuleMap,
   selftRule
