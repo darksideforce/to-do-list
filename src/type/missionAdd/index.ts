@@ -55,5 +55,5 @@ export type {
   typeitem,
   missTypeObject,
   ValidationRuleMap,
-  selftRule
+  selftRule,
 }

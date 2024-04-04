@@ -11,7 +11,9 @@ interface cardBoxItem {
     scale: number,//缩放比例
     title?: string,//title
     missionType?: missionType,//类型
+    timeDetail:string,
     star?: number,
+    createTime:number
   }
 
   export type {

@@ -8,12 +8,13 @@
 <script setup lang="ts">
 import BoxList from './boxList/index.vue'
 import detailBox from './detailBox/index.vue'
+import { cardBoxItem } from '@/type';
 import { missTypeObject } from '@/type';
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, Ref } from 'vue';
 /**
 * 数据部分
 */
-let missionDetail:missTypeObject | any = reactive({})
+let missionDetail: cardBoxItem | any = reactive({})
 let showDetailBox = ref(false)
 let missionList: Ref<Array<missTypeObject | any>> = ref([])
 onBeforeMount(async () => {
@@ -25,12 +26,12 @@ watchEffect(() => {
 
 })
 //点击卡片进行显示细节
-const cardClick = (e:missTypeObject) => {
-  if(e){
+const cardClick = (e: cardBoxItem) => {
+  if (e) {
     showDetailBox.value = true
     missionDetail = e
   }
-  else{
+  else {
     console.log('细节不足，不允许跳转细节')
   }
 }

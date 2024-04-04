@@ -4,7 +4,7 @@ import { createApp } from 'vue'
 import { Quasar } from 'quasar'
 import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/dist/quasar.css'
-
+import 'default-passive-events'
 
 import App from './App.vue'
 import { SvgIconPlugin } from "./components/svgIcon/index";

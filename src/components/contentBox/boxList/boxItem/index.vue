@@ -1,17 +1,18 @@
 <template>
-  <div :class="computedClass" :style="computedStyle" @mouseenter="mouseEnterCardItem" @mouseleave="mouseLeaveCardItem"
+  <div :class="computedClass"  
     @click="handleClickCardToDetail">
     <div class="header">
       <div class="title">{{ cardDetail.title }}</div>
+      <div class="date">
+        {{ cardDetail.time }}
+      </div>
     </div>
     <div class="content">
       <div class="description">
         <SvgIcon :name="cardDetail.missionType + '-background'" color="primary" :width="180" :height="180"></SvgIcon>
       </div>
     </div>
-    <div class="date">
-      {{ cardDetail.date }}
-    </div>
+
     <!-- <div class="collect"></div> 预留区域，收藏或者重点事件-->
     <!-- <div class="collect"></div> 预留区域，取消关注事件-->
 
@@ -41,18 +42,11 @@ const props = defineProps({
   }
 })
 const emit = defineEmits<{
-  cardClick: [index: Number]
+  cardClick: []
 }>()
 const { cardDetail, index } = reactive({ props }).props
-let move = ref('0%')
-const computedStyle = computed(() => {
-  let styles: any = {}
-  styles.top = cardDetail.drift + 'px'
-  styles.width = 220 * cardDetail.scale + 'px'
-  styles.height = 440 * cardDetail.scale + 'px'
-  styles.marginLeft = - (220 * cardDetail.scale / 2) + 'px'
-  return styles
-})
+
+
 //动态类名，根据是否鼠标悬浮来改变
 const computedClass = computed(() => {
   return index === 7 ? 'box-item-root' : 'box-item-root springBox'
@@ -63,14 +57,9 @@ onMounted(() => {
 })
 watchEffect(() => {
 })
-const mouseEnterCardItem = (e: any) => {
-  move.value = '-10%'
-}
-const mouseLeaveCardItem = (e: any) => {
-  move.value = '0%'
-}
+
 const handleClickCardToDetail = () => {
-  emit('cardClick', index)
+  emit('cardClick')
 }
 </script>
 <style scoped lang='less'>
@@ -86,45 +75,26 @@ const handleClickCardToDetail = () => {
   padding: 15px 10px;
 }
 
-.springBox {
-  animation: move-out 0.4s linear 0s 1 normal forwards;
-}
-
-.springBox:hover {
-  animation: move-in 0.4s linear 0s 1 normal forwards;
-}
-
-@keyframes move-in {
-  50% {
-    transform: translateY(-5%);
-  }
-
-  100% {
-    transform: translateY(-10%);
-  }
-}
-
-@keyframes move-out {
-  50% {
-    transform: translateY(-5%);
-  }
-
-  100% {
-    transform: translateY(0%);
-  }
-}
 
 .header {
   align-items: center;
   text-align: center;
-  font-weight: bold;
-  font-size: 16px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 30px;
+
+  .title {
+    font-weight: bold;
+    font-size: 18px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 30px;
+  }
+  .date{
+    font-size: 12px;
+    font-weight: 500;
+    color: #bebebe;
+  }
 }
 
 .content {

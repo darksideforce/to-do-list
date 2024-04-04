@@ -5,7 +5,8 @@ import {
     typeitem,
     missTypeObject,
     ValidationRuleMap,
-    selftRule
+    selftRule,
+
 } from './missionAdd/index'
 import {
     addTypeList,
@@ -27,5 +28,5 @@ export type {
     selftRule,
     addTypeList,
     rulesMap,
-    cardBoxItem
+    cardBoxItem,
 }
