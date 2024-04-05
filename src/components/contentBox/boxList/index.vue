@@ -1,18 +1,20 @@
 <template>
   <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef">
     <BoxItem class="springbox" v-for="item, index in list" :cardDetail="item" :index="index"
-      @cardClick="cardClick(item)" :style="computedStyle(item, index)"></BoxItem>
+      @cardClick="cardClick(item)" :style="computedStyle(item, index)" @mouseenter="handleMouseEnter(index)"
+      @mouseleave="handleMouseLeave(index)"></BoxItem>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { cardBoxItem } from '../../../type/missionType/index'
+import throttle from 'lodash/throttle'
 import { cardBoxItem } from '@/type/index';
 import { missTypeObject } from '@/type/missionAdd';
 import BoxItem from './boxItem/index.vue';
 import { operationTime } from '@/utils'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed } from 'vue';
 import anime from 'animejs';
+import { time } from 'console';
 /**
 * 数据部分,接受从父组件传入的数据
 */
@@ -50,7 +52,7 @@ watch(() => props.missionList, (newvalue, oldvalue) => {
 const computedStyle = (item: cardBoxItem, index: number) => {
   let styles: any = {}
   styles.transform = `translateY(${item.drift}px)  scale(${item.scale})`
-  styles.zIndex = index
+  styles.zIndex = index + 1
   return styles
 }
 //方法，将传入的数组处理成展示用的列表
@@ -66,7 +68,7 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
     array[i].scale = scale
     carouseInfo.scale[i] = scale
     array[i].timeDetail = operationTime(missionList[i].time)
-    carouseInfo.zIndex[i] = parseInt(i)
+    carouseInfo.zIndex[i] = parseInt(i) + 1
     drift -= 25
     scale -= 0.05
   }
@@ -79,33 +81,59 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
 const cardClick = (e: cardBoxItem) => {
   emit('cardClick', e)
 }
+//滚动动画
 const animeOperation = (arrowType: string) => {
   const drift = arrayOperation(carouseInfo.drift, arrowType)
   const scale = arrayOperation(carouseInfo.scale, arrowType)
   const zIndex = arrayOperation(carouseInfo.zIndex, arrowType)
-  console.log(drift)
-  console.log(scale)
-  console.log(zIndex)
   const domList = Array.from(carouselRef.value.children)
   domList.forEach((item, index) => {
-    if (zIndex[index] === 0) {
-      (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
-      let t1 = anime.timeline({
+    //向下滚动
+    if (zIndex[index] === 1 && arrowType === 'down') {
+      console.log(`向下滚动的第一个`);
+      //处理第一个，需要先放大显示出好像小时然后隐藏
+      (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
+      anime({
         targets: item as HTMLDivElement,
-        duration: 150, // Can be inherited
-        easing: 'easeInCubic', // Can be inherited
-      })
-      t1.add({
-        opacity:0,
-      }).add({
-        scale: scale[index],
-        translateY: drift[index],
-        opacity:.5
-      }).add({
-        opacity:1,
-        translateY: drift[index],
-        scale: scale[index]
-      })
+        translateY: 140,
+        scale: 1.05,
+        easing: 'linear',
+        opacity: 0,
+        duration: 300
+      });
+      setTimeout(() => {
+        (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+        anime({
+          targets: item as HTMLDivElement,
+          translateY: drift[index],
+          scale: scale[index],
+          easing: 'linear',
+          opacity: 1,
+          duration: 200
+        });
+      }, 400);
+    }
+    else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
+      (item as HTMLDivElement).style.zIndex = '0';
+      anime({
+        targets: item as HTMLDivElement,
+        translateY: list[0].drift - 25,
+        scale: list[0].scale - 0.05,
+        easing: 'linear',
+        opacity: 0,
+        duration: 300
+      });
+      setTimeout(() => {
+        (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+        anime({
+          targets: item as HTMLDivElement,
+          translateY: drift[index],
+          scale: scale[index],
+          easing: 'linear',
+          opacity: 1,
+          duration: 200
+        });
+      }, 400);
     }
     else {
       (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
@@ -117,15 +145,16 @@ const animeOperation = (arrowType: string) => {
         duration: 500
       });
     }
-
   });
 }
+
 const arrayOperation = (val: number[], type: string) => {
   const target = type === 'down' ? val.shift() : val.pop();
   type === 'down' ? val.push(target!) : val.unshift(target!);
   return val;
 }
-const handleMouseEvent = (e: any) => {
+//鼠标滚动
+const handleMouseEvent = throttle((e: any) => {
   if (e.deltaY > 0) {
     animeOperation('down')
   }
@@ -133,9 +162,14 @@ const handleMouseEvent = (e: any) => {
     console.log(`鼠标向上滚动`)
     animeOperation('up')
   }
-
+},700)
+//鼠标悬停
+const handleMouseEnter = (index: number) => {
+  console.log(`mouseenter`)
 }
-
+const handleMouseLeave = (index: number) => {
+  console.log(`mouseLeave`)
+}
 //处理时间为将过时或者离结束还剩XX，或者以及过时
 
 </script>
@@ -145,26 +179,6 @@ const handleMouseEvent = (e: any) => {
   top: 30px;
   width: 100%;
   height: 100%;
-}
-
-@keyframes move-in {
-  50% {
-    transform: translateY(-5%);
-  }
-
-  100% {
-    transform: translateY(-10%);
-  }
-}
-
-@keyframes move-out {
-  50% {
-    transform: translateY(-5%);
-  }
-
-  100% {
-    transform: translateY(0%);
-  }
 }
 
 .btn {
