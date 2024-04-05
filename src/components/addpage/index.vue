@@ -31,14 +31,14 @@ import datechoosen from './components/datechoosen/index.vue'
 import clickButton from '../clickButton/index.vue'
 
 
-
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { ref, reactive, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 import { missTypeObject } from '../../type/missionAdd';
 import { rulesMap } from '../../type/missionAdd/config'
 
 /**
 * 数据部分
 */
+const emit = defineEmits(['successCreated'])
 const props = defineProps({
   showAddPage: {
     type: Boolean,
@@ -88,13 +88,11 @@ const handleclickSubmit = () => {
       console.log('校验失败')
     }
     else {
-      console.log('校验成功');
       projectObject.createTime = new Date().getTime();
       (window as any).electronAPI.createFile(JSON.stringify(projectObject))
+      emit('successCreated')
     }
   })
-
-
 
 }
 
@@ -106,7 +104,7 @@ const handleclickSubmit = () => {
   display: flex;
   justify-content: center;
   position: absolute;
-
+  z-index:99;
   .add-page-content {
     width: 400px;
     height: 750px;

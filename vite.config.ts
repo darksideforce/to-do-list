@@ -21,7 +21,6 @@ export default defineConfig(({ command }) => {
       quasar(),
       electron({
         main: {
-          // Shortcut of `build.lib.entry`
           entry: 'electron/main/index.ts',
           onstart({ startup }) {
             if (process.env.VSCODE_DEBUG) {
@@ -71,6 +70,13 @@ export default defineConfig(({ command }) => {
       }),
       
     ],
+    css:{
+      preprocessorOptions:{
+        less:{
+          additionalData:'@import "./src/assets/styles/variable.less";'
+        }
+      }
+    },
     resolve:{
       alias:{
         "@":path.resolve(__dirname,'./src/')

@@ -1,8 +1,7 @@
 <template>
   <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef">
     <BoxItem class="springbox" v-for="item, index in list" :cardDetail="item" :index="index"
-      @cardClick="cardClick(item)" :style="computedStyle(item, index)" @mouseenter="handleMouseEnter(index)"
-      @mouseleave="handleMouseLeave(index)"></BoxItem>
+      @cardClick="cardClick(item)" :style="computedStyle(item, index)"></BoxItem>
   </div>
 </template>
 
@@ -37,6 +36,7 @@ let carouseInfo = reactive<CarouseInfo>({
   zIndex: [],
   length: 0
 })
+let isMoving = false
 const carouselRef = ref();
 const emit = defineEmits<{
   cardClick: [missionItem: cardBoxItem],
@@ -57,7 +57,6 @@ const computedStyle = (item: cardBoxItem, index: number) => {
 }
 //方法，将传入的数组处理成展示用的列表
 const operationList = function (missionList: Array<missTypeObject | any>): cardBoxItem[] {
-  const maxLength = 10
   let array: any = []
   let drift = 115
   let scale = 1
@@ -74,7 +73,6 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
   }
   carouseInfo.drift = carouseInfo.drift.reverse()
   carouseInfo.scale = carouseInfo.scale.reverse()
-  // carouseInfo.zIndex = carouseInfo.zInde
   carouseInfo.length = carouseInfo.drift.length
   return array.reverse()
 }
@@ -90,7 +88,6 @@ const animeOperation = (arrowType: string) => {
   domList.forEach((item, index) => {
     //向下滚动
     if (zIndex[index] === 1 && arrowType === 'down') {
-      console.log(`向下滚动的第一个`);
       //处理第一个，需要先放大显示出好像小时然后隐藏
       (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
       anime({
@@ -111,7 +108,7 @@ const animeOperation = (arrowType: string) => {
           opacity: 1,
           duration: 200
         });
-      }, 400);
+      }, 300);
     }
     else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
       (item as HTMLDivElement).style.zIndex = '0';
@@ -121,19 +118,29 @@ const animeOperation = (arrowType: string) => {
         scale: list[0].scale - 0.05,
         easing: 'linear',
         opacity: 0,
-        duration: 300
+        duration: 200
       });
       setTimeout(() => {
         (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
         anime({
           targets: item as HTMLDivElement,
-          translateY: drift[index],
-          scale: scale[index],
+          translateY: 140,
+          scale: 1.05,
           easing: 'linear',
-          opacity: 1,
-          duration: 200
-        });
-      }, 400);
+          opacity: 0,
+          duration: 100
+        })
+        setTimeout(() => {
+          anime({
+            targets: item as HTMLDivElement,
+            translateY: drift[index],
+            scale: scale[index],
+            easing: 'linear',
+            opacity: 1,
+            duration: 400
+          });
+        }, 100)
+      }, 200)
     }
     else {
       (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
@@ -155,21 +162,44 @@ const arrayOperation = (val: number[], type: string) => {
 }
 //鼠标滚动
 const handleMouseEvent = throttle((e: any) => {
-  if (e.deltaY > 0) {
-    animeOperation('down')
+  if (!isMoving) {
+    if (e.deltaY > 0) {
+      animeOperation('down')
+    }
+    else {
+      animeOperation('up')
+    }
   }
-  else {
-    console.log(`鼠标向上滚动`)
-    animeOperation('up')
-  }
-},700)
+}, 700)
 //鼠标悬停
-const handleMouseEnter = (index: number) => {
-  console.log(`mouseenter`)
-}
-const handleMouseLeave = (index: number) => {
-  console.log(`mouseLeave`)
-}
+// const handleMouseMove = throttle((index: number, type: string) => {
+//   const dom = Array.from(carouselRef.value.children)[index]
+//   if (carouseInfo.zIndex[index] !== carouseInfo.length) {
+//     if (type === 'enter') {
+//       isMoving = true
+//       anime({
+//         targets: dom as HTMLDivElement,
+//         rotate: 20,
+//         translateX: 20,
+//         easing: 'linear',
+//         duration: 300
+//       });
+//     }
+//     else if (type === 'leave') {
+//       anime({
+//         targets: dom as HTMLDivElement,
+//         rotate: 0,
+//         translateX: 0,
+//         easing: 'linear',
+//         duration: 300
+//       });
+//       setTimeout(() => {
+//         isMoving = false
+//       }, 300);
+//     }
+//   }
+// },300)
+
 //处理时间为将过时或者离结束还剩XX，或者以及过时
 
 </script>

@@ -16,7 +16,7 @@
     </div>
     <div class="card-detail-textlist">
       <section class="textlist-title">
-        <p>待办事务详情</p>
+        <span>待办事务详情</span>
         <SvgIcon name="more" color="primary" width="large" height="large"></SvgIcon>
       </section>
       <section class="textlist-section">
