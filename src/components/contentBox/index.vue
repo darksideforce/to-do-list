@@ -10,20 +10,25 @@ import BoxList from './boxList/index.vue'
 import detailBox from './detailBox/index.vue'
 import { cardBoxItem } from '@/type';
 import { missTypeObject } from '@/type';
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed, Ref } from 'vue';
+import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed, Ref } from 'vue';
 /**
 * 数据部分
 */
 let missionDetail: cardBoxItem | any = reactive({})
+const props = defineProps<{
+  update: boolean
+}>()
 let showDetailBox = ref(false)
 let missionList: Ref<Array<missTypeObject | any>> = ref([])
 onBeforeMount(async () => {
   missionList.value = await resolveFile()
 })
-onMounted(() => {
-})
-watchEffect(() => {
-
+watch(() => props.update, async(newvalue, oldvalue) => {
+  if (newvalue === true) {
+    missionList.value = await resolveFile()
+  }
+}, {
+  immediate: false
 })
 //点击卡片进行显示细节
 const cardClick = (e: cardBoxItem) => {
@@ -44,6 +49,7 @@ const detailClick = () => {
 //解析本地文件
 const resolveFile = async function (): Promise<any[]> {
   const res = await (window as any).electronAPI.readFile()
+  console.log(res)
   //如果获取到缓存文件，则进行展示
   if (res) {
     return res

@@ -4,8 +4,8 @@
       <MainTitle :titleMessage="'To-Do-List'" @titleClick="handleclickAddTag"></mainTitle>
     </div>
     <div class="content">
-      <contentBox ></contentBox>
-      <addpage v-if="showAddPage" :showAddPage="animationController" @success-created="showAddPage=false"></addpage>
+      <contentBox :update="update"></contentBox>
+      <addpage v-if="showAddPage" :showAddPage="animationController" @success-created="handleclickAddTag(false)"></addpage>
     </div>
     <div class="footer">
 
@@ -23,9 +23,12 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed 
 * 数据部分
 */
 const showAddPage = ref(false)
+let update = ref(false)
 const animationController = ref(false)
 //点击添加按钮
 const handleclickAddTag = (e: boolean) => {
+  console.log(`点击按键被触发了，值为${e}`)
+  update.value  = !e
   animationController.value = e
   if (!e) {
     setTimeout(() => {

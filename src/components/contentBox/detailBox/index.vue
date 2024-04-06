@@ -32,7 +32,7 @@
           <SvgIcon name="calendar" color="primary" width="large" height="large"></SvgIcon>
         </div>
         <div class="card-detail-info"> 
-          {{  missionDetail.date }}
+          {{  missionDetail.time }}
         </div>
       </section>
       <section class="textlist-section">
@@ -228,13 +228,10 @@ const handleClickCardToClose = () => {
       min-height: 80px;
       margin-left: 40px;
       display: inline-block;
-      // height: 120px;
-      // flex-wrap: wrap;
       overflow-wrap: break-word;
-      width: 170px;
-      // flex: 1;
+      flex: 1;
       word-break: break-all;
-      // overflow: auto;
+      font-size: @textContent;
     }
 
     .text-list-logobox {

@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createFile, readFile } from '../file'
+import { createFile, finishFile, readFile } from '../file'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -114,10 +114,12 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 })
 
-ipcMain.on('create-file', (event, data) => {
-  createFile(event,data)
-})
+// ipcMain.on('create-file', (event, data) => {
+//   createFile(event,data)
+// })
 // ipcMain.on('read-file',readFile())
 
 //来自页面的事件集中监听
 ipcMain.handle('read-file', readFile)
+ipcMain.handle('create-file',createFile)
+ipcMain.handle('finish-file',finishFile)

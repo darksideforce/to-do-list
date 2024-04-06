@@ -25,5 +25,3 @@ export const Resize:any = {
         ob.unobserve(el)
     }
 }
-
-export default Resize

@@ -23,7 +23,9 @@ createApp(App)
   .use(Quasar, {
     plugins: {}, // import Quasar plugins and add here
   })
+  .directive('',{})
   .mount('#app')
   .$nextTick(() => {
     postMessage({ payload: 'removeLoading' }, '*')
   })
+  

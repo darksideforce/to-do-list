@@ -54,7 +54,7 @@ let projectObject: missTypeObject = reactive({
   star: 0,
   link: '',
   relate: '',
-  createTime:'',
+  createTime: '',
 })
 let title: any = ref(null)
 let type: any = ref(null)
@@ -63,8 +63,8 @@ let relate: any = ref(null)
 let link: any = ref(null)
 let descripiton: any = ref(null)
 
-let computedClass = computed(() => { 
-  return props.showAddPage?'add-page-root show-box':'add-page-root dispear-box'
+let computedClass = computed(() => {
+  return props.showAddPage ? 'add-page-root show-box' : 'add-page-root dispear-box'
 })
 onBeforeMount(() => {
 })
@@ -83,14 +83,18 @@ const handleclickSubmit = () => {
     link.value.checkValidate(),
     type.value.checkValidate(),
     descripiton.value.checkValidate()
-  ]).then(e => {
+  ]).then(async e => {
     if (e.indexOf(false) > -1) {
       console.log('校验失败')
     }
     else {
       projectObject.createTime = new Date().getTime();
-      (window as any).electronAPI.createFile(JSON.stringify(projectObject))
-      emit('successCreated')
+      const result = await (window as any).electronAPI.createFile(JSON.stringify(projectObject))
+      console.log(`result=${result}`)
+      if (result) {
+        emit('successCreated')
+      }
+
     }
   })
 
@@ -104,7 +108,8 @@ const handleclickSubmit = () => {
   display: flex;
   justify-content: center;
   position: absolute;
-  z-index:99;
+  z-index: 99;
+
   .add-page-content {
     width: 400px;
     height: 750px;
@@ -133,19 +138,22 @@ const handleclickSubmit = () => {
     transform: translateX(-50%);
   }
 }
-.show-box{
+
+.show-box {
   top: 0;
   left: 0;
   animation: show-animation 0.3s linear 0s forwards;
   display: show;
 }
-.dispear-box{
+
+.dispear-box {
   top: 0;
   left: 0;
   // display: none;
   animation: none-animation 0.3s linear 0s forwards;
-  
+
 }
+
 .sumbitButton-text {
   margin-left: 20px;
   color: #fff;
@@ -157,18 +165,20 @@ const handleclickSubmit = () => {
 @keyframes show-animation {
   0% {
     left: 100%;
-    
+
   }
 
   100% {
     left: 0%;
   }
 }
+
 @keyframes none-animation {
-  0%{
+  0% {
     left: 0%;
   }
-  100%{
+
+  100% {
     left: 130%;
     display: none;
   }

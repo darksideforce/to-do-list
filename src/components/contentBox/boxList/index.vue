@@ -29,6 +29,14 @@ type CarouseInfo = {
   zIndex: number[],
   length: number,
 };
+type animeType = {
+  targets: HTMLDivElement,
+  translateY?: number,
+  scale?: number,
+  easing: string,
+  opacity?: number,
+  duration: number
+}
 let list: cardBoxItem[] = reactive([])
 let carouseInfo = reactive<CarouseInfo>({
   drift: [],
@@ -66,7 +74,8 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
     carouseInfo.drift[i] = drift
     array[i].scale = scale
     carouseInfo.scale[i] = scale
-    array[i].timeDetail = operationTime(missionList[i].time)
+    array[i].timeDetail = operationTime(missionList[i].time).days
+    array[i].type = operationTime(missionList[i].time).delayType
     carouseInfo.zIndex[i] = parseInt(i) + 1
     drift -= 25
     scale -= 0.05
@@ -74,17 +83,85 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
   carouseInfo.drift = carouseInfo.drift.reverse()
   carouseInfo.scale = carouseInfo.scale.reverse()
   carouseInfo.length = carouseInfo.drift.length
+  console.log(array)
   return array.reverse()
 }
 const cardClick = (e: cardBoxItem) => {
   emit('cardClick', e)
 }
 //滚动动画
-const animeOperation = (arrowType: string) => {
+const animeOperation = async (arrowType: string) => {
   const drift = arrayOperation(carouseInfo.drift, arrowType)
   const scale = arrayOperation(carouseInfo.scale, arrowType)
   const zIndex = arrayOperation(carouseInfo.zIndex, arrowType)
   const domList = Array.from(carouselRef.value.children)
+  // for (let [index, item] of domList.entries()) {
+  //   if (zIndex[index] === 1 && arrowType === 'down') {
+  //     //处理第一个，需要先放大显示出好像小时然后隐藏
+  //     (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
+  //     await animeSync({
+  //       targets: item as HTMLDivElement,
+  //       translateY: 140,
+  //       scale: 1.05,
+  //       easing: 'linear',
+  //       opacity: 0,
+  //       duration: 300
+  //     });
+  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+  //     anime({
+  //       targets: item as HTMLDivElement,
+  //       translateY: drift[index],
+  //       scale: scale[index],
+  //       easing: 'linear',
+  //       opacity: 1,
+  //       duration: 500
+  //     })
+  //   }
+  //   else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
+  //     (item as HTMLDivElement).style.zIndex = '0';
+  //     await animeSync({
+  //       targets: item as HTMLDivElement,
+  //       translateY: list[0].drift - 25,
+  //       scale: list[0].scale - 0.05,
+  //       easing: 'linear',
+  //       opacity: 0,
+  //       duration: 200
+  //     })
+  //     await animeSync({
+  //       targets: item as HTMLDivElement,
+  //       translateY: 140,
+  //       scale: 1.05,
+  //       easing: 'linear',
+  //       opacity: 0,
+  //       duration: 100
+  //     });
+  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+  //     await animeSync({
+  //       targets: item as HTMLDivElement,
+  //       opacity: 1,
+  //       easing: 'linear',
+  //       duration: 100
+  //     })
+  //     anime({
+  //       targets: item as HTMLDivElement,
+  //       translateY: drift[index],
+  //       scale: scale[index],
+  //       easing: 'linear',
+  //       opacity: 1,
+  //       duration: 300
+  //     });
+  //   }
+  //   else {
+  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
+  //     anime({
+  //       targets: item as HTMLDivElement,
+  //       translateY: drift[index],
+  //       scale: scale[index],
+  //       easing: 'linear',
+  //       duration: 400,
+  //     });
+  //   }
+  // }
   domList.forEach((item, index) => {
     //向下滚动
     if (zIndex[index] === 1 && arrowType === 'down') {
@@ -106,7 +183,7 @@ const animeOperation = (arrowType: string) => {
           scale: scale[index],
           easing: 'linear',
           opacity: 1,
-          duration: 200
+          duration: 500
         });
       }, 300);
     }
@@ -121,7 +198,6 @@ const animeOperation = (arrowType: string) => {
         duration: 200
       });
       setTimeout(() => {
-        (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
         anime({
           targets: item as HTMLDivElement,
           translateY: 140,
@@ -131,15 +207,23 @@ const animeOperation = (arrowType: string) => {
           duration: 100
         })
         setTimeout(() => {
+          (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
           anime({
             targets: item as HTMLDivElement,
-            translateY: drift[index],
-            scale: scale[index],
-            easing: 'linear',
-            opacity: 1,
-            duration: 400
-          });
-        }, 100)
+            opacity: 0.5,
+            duration: 100
+          })
+          setTimeout(() => {
+            anime({
+              targets: item as HTMLDivElement,
+              translateY: drift[index],
+              scale: scale[index],
+              easing: 'linear',
+              opacity: 1,
+              duration: 500
+            });
+          }, 100)
+        }, 100);
       }, 200)
     }
     else {
@@ -149,7 +233,7 @@ const animeOperation = (arrowType: string) => {
         translateY: drift[index],
         scale: scale[index],
         easing: 'linear',
-        duration: 500
+        duration: 400,
       });
     }
   });
@@ -159,6 +243,14 @@ const arrayOperation = (val: number[], type: string) => {
   const target = type === 'down' ? val.shift() : val.pop();
   type === 'down' ? val.push(target!) : val.unshift(target!);
   return val;
+}
+const animeSync = async (opt: animeType): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    anime(opt);
+    setTimeout(() => {
+      resolve()
+    }, opt.duration + 50);
+  })
 }
 //鼠标滚动
 const handleMouseEvent = throttle((e: any) => {
@@ -170,7 +262,7 @@ const handleMouseEvent = throttle((e: any) => {
       animeOperation('up')
     }
   }
-}, 700)
+}, 1000)
 //鼠标悬停
 // const handleMouseMove = throttle((index: number, type: string) => {
 //   const dom = Array.from(carouselRef.value.children)[index]

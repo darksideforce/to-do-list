@@ -65,11 +65,8 @@ watch(() => selectedValue.value, () => {
   immediate: true
 })
 let checkValidate = async () => {
-  console.log(selectedValue.value)
   return new Promise((resolve, reject) => {
     if (selectedValue.value === '') {
-      console.log('enter')
-      console.log(selectedValue.value)
       selectedRoot.value = false
       resolve(false)
     }

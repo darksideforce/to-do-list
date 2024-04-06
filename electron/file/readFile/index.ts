@@ -32,7 +32,7 @@ const readfileSync = async function (params: string): Promise<any> {
  * @param filePath 文件路径，基于根目录
  * @returns 读取的文件对象
  */
-const readFile = async function (filePath: string): Promise<any> {
+const readFile = async function (event,filePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
         try {
             fs.stat(dirPath, async (err, stats) => {
@@ -54,7 +54,7 @@ const readFile = async function (filePath: string): Promise<any> {
                                 const fileRes = await readdirSync(dirPath + '\\' + i)
                                 for (let j of fileRes) {
                                     const result = await readfileSync(dirPath + '\\' + i + '\\' + j)
-                                    list.push(JSON.parse(result))
+                                    list.push(Object.assign(JSON.parse(result),{id:`${i}_${j}`}))
                                 }
                             }
                             resolve(list)

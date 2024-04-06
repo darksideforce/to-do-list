@@ -13,7 +13,7 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed 
 * 数据部分
 */
 const data = reactive({})
-const clickButton = ref(null)
+const clickButton = ref<any>(null)
 const emit = defineEmits<{
   submitClick: []
 }>()
@@ -40,11 +40,10 @@ const handleClickSubmit = (e:any) => {
     buttonAnimation.value = true
     let x = e.offsetX//e.x - e.target.offsetLeft
     let y = e.offsetY//e.y - e.target.offsetTop
-    // console.log(x,y)
-    let ripples = document.createElement('span')
+    let ripples:any = document.createElement('span')
     ripples.className = "ripples"
-    ripples.style.left = x + 'px'
-    ripples.style.top = y + 'px'
+    ripples.style.left = x + 'px';
+    ripples.style.top = y + 'px';
     clickButton.value.appendChild(ripples)
     setTimeout(() => {
       ripples.remove()

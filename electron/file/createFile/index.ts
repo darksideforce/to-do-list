@@ -36,15 +36,17 @@ const generaName =function (length) {
  * @param message 文件内的文本 
  * @returns 
  */
-const createFile = async function (event, message: string): Promise<void> {
+const createFile = async function (event, message: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
             await createDir(dirPath)
             await createDir(filePath)
             const fileName = filePath + '\\' + generaName(20)  + '.json'
             await write(fileName, message)
+            resolve(true)
         }
         catch (e) {
+            reject(false)
             console.error('create file error', e)
         }
     })
