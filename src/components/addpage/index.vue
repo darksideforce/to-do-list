@@ -55,6 +55,7 @@ let projectObject: missTypeObject = reactive({
   link: '',
   relate: '',
   createTime: '',
+  completionStatus:'incomplete'
 })
 let title: any = ref(null)
 let type: any = ref(null)

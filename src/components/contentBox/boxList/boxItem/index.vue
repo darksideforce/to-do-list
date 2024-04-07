@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="button-area">
-      <div class="button" v-longpress:click.stop="handleclickToDone,1">
+      <div class="button" v-longpress:click.stop="handleclickToDone, 1">
         <SvgIcon name="success" color="primary" :width="20" :height="20"></SvgIcon>
         <div class="text">Done</div>
       </div>
@@ -54,7 +54,8 @@ const props = defineProps({
   }
 })
 const emit = defineEmits<{
-  cardClick: []
+  cardClick: [],
+  cardFinish:[]
 }>()
 const { cardDetail, index } = reactive({ props }).props
 
@@ -73,8 +74,15 @@ watchEffect(() => {
 const handleClickCardToDetail = () => {
   emit('cardClick')
 }
-const handleclickToDone = async() => {
-  await (window as any).electronAPI.finishFile(JSON.stringify(cardDetail))
+const handleclickToDone = async () => {
+  try {
+    const res = await (window as any).electronAPI.finishFile(JSON.stringify(cardDetail))
+    console.log(`done`)
+    emit('cardFinish')
+  }
+  catch (e: any) {
+    console.log(`finish mission fail ,fail = ${e.message}`)
+  }
 }
 </script>
 <style scoped lang='less'>

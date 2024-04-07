@@ -1,6 +1,6 @@
 <template>
   <div class="contentBox-root">
-    <BoxList @card-click="cardClick" :missionList="missionList"></BoxList>
+    <BoxList @card-click="cardClick" :missionList="missionList" @up-date-data="updateData"></BoxList>
     <detailBox v-if="showDetailBox" @detail-click="detailClick" :mission-detail="missionDetail"></detailBox>
   </div>
 </template>
@@ -21,11 +21,13 @@ const props = defineProps<{
 let showDetailBox = ref(false)
 let missionList: Ref<Array<missTypeObject | any>> = ref([])
 onBeforeMount(async () => {
+  updateData()
   missionList.value = await resolveFile()
 })
-watch(() => props.update, async(newvalue, oldvalue) => {
+watch(() => props.update, async (newvalue, oldvalue) => {
   if (newvalue === true) {
-    missionList.value = await resolveFile()
+    // missionList.value = await resolveFile()
+    updateData()
   }
 }, {
   immediate: false
@@ -45,6 +47,11 @@ const detailClick = () => {
   setTimeout(() => {
     showDetailBox.value = false
   }, 300)
+}
+const updateData = async () => {
+  console.log(`contentbox`)
+  missionList.value = await resolveFile()
+  console.log(`update data done`)
 }
 //解析本地文件
 const resolveFile = async function (): Promise<any[]> {

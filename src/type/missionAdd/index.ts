@@ -18,18 +18,21 @@ type typeitem = {
   typeSvg: typeSvgIcon,
   type:missionType
 }
-
-//添加的必传参数
-interface missTypeObject {
-  time: string,
+interface missionModel {
+  title:string,
+  createTime:number | string,
+  type?:`warning` | `proceed` | `unexpired`,
   descripiton: string,
   content: string,
-  title?: string,
-  missionType?: missionType,
+  missionType: missionType,
+  completionStatus:'incomplete' | 'cancel' | 'complete' | 'delete'
+}
+//添加的必传参数
+interface missTypeObject extends missionModel{
+  time: string,
   star?: number,
   relate?: string,
   link?: string,
-  createTime:Number | any,
 }
 
 interface selftRule {
@@ -56,4 +59,5 @@ export type {
   missTypeObject,
   ValidationRuleMap,
   selftRule,
+  missionModel
 }

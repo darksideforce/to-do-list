@@ -2,6 +2,7 @@ import { app, shell } from 'electron'
 import fs from 'node:fs'
 import path from 'path'
 import createDir from '../createDir'
+import { writefileSync } from '../uitls'
 
 const dirPath = app.getAppPath() + '\\cache'
 const currentDate = new Date();
@@ -42,7 +43,7 @@ const createFile = async function (event, message: string): Promise<boolean> {
             await createDir(dirPath)
             await createDir(filePath)
             const fileName = filePath + '\\' + generaName(20)  + '.json'
-            await write(fileName, message)
+            await writefileSync(fileName, message)
             resolve(true)
         }
         catch (e) {
@@ -52,22 +53,6 @@ const createFile = async function (event, message: string): Promise<boolean> {
     })
 
 }
-/**
- * 写入
- * @param filePath 文件路径 
- * @param content 文件内容
- * @returns 失败或成功
- */
-const write = function (filePath: string, content: string = ''): Promise<Boolean> {
-    return new Promise(async (resolve, reject) => {
-        fs.writeFile(filePath, content, 'utf-8', (err) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(true)
-            }
-        })
-    })
-}
+
 
 export default createFile

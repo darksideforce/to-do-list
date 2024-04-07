@@ -2,78 +2,41 @@
 import { app, shell } from 'electron'
 import fs from 'node:fs'
 import path from 'path'
+import { readdirSync, readfileSync, fileExistSync } from '../uitls'
 const dirPath = app.getAppPath() + '\\cache'
 
-const readdirSync = async function (params: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        fs.readdir(params, (err, files) => {
-            if (err)
-                console.log(err);
-            else {
-                resolve(files)
-            }
-        })
-    })
-}
-
-const readfileSync = async function (params: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        fs.readFile(params, 'utf8', (error, data) => {
-            console.log(`result=${error},${JSON.stringify(data)}`)
-            if (error) {
-                reject('error')
-            }
-            resolve(data)
-        });
-    })
-}
 /**
  * 
  * @param filePath 文件路径，基于根目录
  * @returns 读取的文件对象
  */
-const readFile = async function (event,filePath: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        try {
-            fs.stat(dirPath, async (err, stats) => {
-                if (err) {
-                    if (err.code === 'ENOENT') {
-                        console.log('folder not exist');
-                        resolve('')
-                    } else {
-                        console.error('发生错误', err);
-                    }
-                } else {
+const readFile = async function (event, filePath: string): Promise<string|void[]> {
+    return new Promise(async (resolve, reject) => {
 
-                    if (stats.isDirectory()) {
-                        //找寻到对应文件夹
-                        try {
-                            const res = await readdirSync(dirPath);
-                            let list = []
-                            for (let i of res) {
-                                const fileRes = await readdirSync(dirPath + '\\' + i)
-                                for (let j of fileRes) {
-                                    const result = await readfileSync(dirPath + '\\' + i + '\\' + j)
-                                    list.push(Object.assign(JSON.parse(result),{id:`${i}_${j}`}))
-                                }
-                            }
-                            resolve(list)
-                        }
-                        catch (e) {
-                            console.log(e)
-                            reject(e)
-                        }
-                    } else {
-                        console.log('path/to/folder not the same folder');
-                        reject([])
+        try {
+            if (await fileExistSync(dirPath)) {
+                const res = await readdirSync(dirPath);
+                let list = []
+                for (let i of res) {
+                    const fileRes = await readdirSync(dirPath + '\\' + i)
+                    for (let j of fileRes) {
+                        const result = await readfileSync(dirPath + '\\' + i + '\\' + j)
+                        list.push(Object.assign(JSON.parse(result), { id: `${i}?${j}` }))
                     }
                 }
-            })
+                resolve(list)
+            }
+            else{
+                resolve([])
+            }
+
         }
         catch (e) {
-            console.log(`e=${e}`)
+            console.log(e)
             reject(e)
         }
+
+
     })
 }
 

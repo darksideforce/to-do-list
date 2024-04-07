@@ -1,7 +1,9 @@
 <template>
   <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef">
     <BoxItem class="springbox" v-for="item, index in list" :cardDetail="item" :index="index"
-      @cardClick="cardClick(item)" :style="computedStyle(item, index)"></BoxItem>
+      @cardClick="cardClick(item)" 
+      @card-finish="updateData"
+      :style="computedStyle(item, index)"></BoxItem>
   </div>
 </template>
 
@@ -48,6 +50,7 @@ let isMoving = false
 const carouselRef = ref();
 const emit = defineEmits<{
   cardClick: [missionItem: cardBoxItem],
+  upDateData:[]
 }>()
 watch(() => props.missionList, (newvalue, oldvalue) => {
   if (newvalue.length) {
@@ -95,73 +98,7 @@ const animeOperation = async (arrowType: string) => {
   const scale = arrayOperation(carouseInfo.scale, arrowType)
   const zIndex = arrayOperation(carouseInfo.zIndex, arrowType)
   const domList = Array.from(carouselRef.value.children)
-  // for (let [index, item] of domList.entries()) {
-  //   if (zIndex[index] === 1 && arrowType === 'down') {
-  //     //处理第一个，需要先放大显示出好像小时然后隐藏
-  //     (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
-  //     await animeSync({
-  //       targets: item as HTMLDivElement,
-  //       translateY: 140,
-  //       scale: 1.05,
-  //       easing: 'linear',
-  //       opacity: 0,
-  //       duration: 300
-  //     });
-  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
-  //     anime({
-  //       targets: item as HTMLDivElement,
-  //       translateY: drift[index],
-  //       scale: scale[index],
-  //       easing: 'linear',
-  //       opacity: 1,
-  //       duration: 500
-  //     })
-  //   }
-  //   else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
-  //     (item as HTMLDivElement).style.zIndex = '0';
-  //     await animeSync({
-  //       targets: item as HTMLDivElement,
-  //       translateY: list[0].drift - 25,
-  //       scale: list[0].scale - 0.05,
-  //       easing: 'linear',
-  //       opacity: 0,
-  //       duration: 200
-  //     })
-  //     await animeSync({
-  //       targets: item as HTMLDivElement,
-  //       translateY: 140,
-  //       scale: 1.05,
-  //       easing: 'linear',
-  //       opacity: 0,
-  //       duration: 100
-  //     });
-  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
-  //     await animeSync({
-  //       targets: item as HTMLDivElement,
-  //       opacity: 1,
-  //       easing: 'linear',
-  //       duration: 100
-  //     })
-  //     anime({
-  //       targets: item as HTMLDivElement,
-  //       translateY: drift[index],
-  //       scale: scale[index],
-  //       easing: 'linear',
-  //       opacity: 1,
-  //       duration: 300
-  //     });
-  //   }
-  //   else {
-  //     (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
-  //     anime({
-  //       targets: item as HTMLDivElement,
-  //       translateY: drift[index],
-  //       scale: scale[index],
-  //       easing: 'linear',
-  //       duration: 400,
-  //     });
-  //   }
-  // }
+
   domList.forEach((item, index) => {
     //向下滚动
     if (zIndex[index] === 1 && arrowType === 'down') {
@@ -238,19 +175,14 @@ const animeOperation = async (arrowType: string) => {
     }
   });
 }
-
 const arrayOperation = (val: number[], type: string) => {
   const target = type === 'down' ? val.shift() : val.pop();
   type === 'down' ? val.push(target!) : val.unshift(target!);
   return val;
 }
-const animeSync = async (opt: animeType): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    anime(opt);
-    setTimeout(() => {
-      resolve()
-    }, opt.duration + 50);
-  })
+const updateData = async () => {
+  console.log(`boxlist`)
+  emit('upDateData')
 }
 //鼠标滚动
 const handleMouseEvent = throttle((e: any) => {
@@ -263,36 +195,9 @@ const handleMouseEvent = throttle((e: any) => {
     }
   }
 }, 1000)
-//鼠标悬停
-// const handleMouseMove = throttle((index: number, type: string) => {
-//   const dom = Array.from(carouselRef.value.children)[index]
-//   if (carouseInfo.zIndex[index] !== carouseInfo.length) {
-//     if (type === 'enter') {
-//       isMoving = true
-//       anime({
-//         targets: dom as HTMLDivElement,
-//         rotate: 20,
-//         translateX: 20,
-//         easing: 'linear',
-//         duration: 300
-//       });
-//     }
-//     else if (type === 'leave') {
-//       anime({
-//         targets: dom as HTMLDivElement,
-//         rotate: 0,
-//         translateX: 0,
-//         easing: 'linear',
-//         duration: 300
-//       });
-//       setTimeout(() => {
-//         isMoving = false
-//       }, 300);
-//     }
-//   }
-// },300)
 
 //处理时间为将过时或者离结束还剩XX，或者以及过时
+//通知父组件更新数据
 
 </script>
 <style scoped lang='less'>
