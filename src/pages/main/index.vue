@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <contentBox :update="update"></contentBox>
-      <addpage v-if="showAddPage" :showAddPage="animationController" @success-created="handleclickAddTag(false)"></addpage>
+      <addpage v-if="showAddPage" :showAddPage="animationController" @success-created="handleCreated"></addpage>
     </div>
     <div class="footer">
 
@@ -19,16 +19,16 @@ import contentBox from '../../components/contentBox/index.vue'
 import addpage from '../../components/addpage/index.vue'
 
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { mainStore } from '@/store';
 /**
 * 数据部分
 */
+const store = mainStore()
 const showAddPage = ref(false)
 let update = ref(false)
 const animationController = ref(false)
 //点击添加按钮
 const handleclickAddTag = (e: boolean) => {
-  console.log(`点击按键被触发了，值为${e}`)
-  update.value  = !e
   animationController.value = e
   if (!e) {
     setTimeout(() => {
@@ -39,7 +39,10 @@ const handleclickAddTag = (e: boolean) => {
     showAddPage.value = e
   }
 }
-
+const handleCreated = async ()=>{
+  await store.getFileList()
+  handleclickAddTag(false)
+}
 </script>
 <style scoped lang='less'>
 .main-page-root {

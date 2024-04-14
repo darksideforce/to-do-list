@@ -1,9 +1,7 @@
 <template>
-  <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef">
-    <BoxItem class="springbox" v-for="item, index in list" :cardDetail="item" :index="index"
-      @cardClick="cardClick(item)" 
-      @card-finish="updateData"
-      :style="computedStyle(item, index)"></BoxItem>
+  <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef" v-if="showBoxItem">
+    <BoxItem class="springbox" v-for="(item, index) in list" :cardDetail="item" :index="index"
+      @cardClick="cardClick(item)" @card-finish="updateData" :style="computedStyle(item, index)"></BoxItem>
   </div>
 </template>
 
@@ -15,31 +13,24 @@ import BoxItem from './boxItem/index.vue';
 import { operationTime } from '@/utils'
 import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed } from 'vue';
 import anime from 'animejs';
-import { time } from 'console';
+import { storeToRefs } from "pinia";
+import { mainStore } from "@/store"
+
+const store = mainStore();
 /**
 * 数据部分,接受从父组件传入的数据
 */
-interface propsType {
-  missionList: missTypeObject | any
-}
-const props = withDefaults(defineProps<propsType>(), {
-  missionList: []
-})
+
+
 type CarouseInfo = {
   drift: number[];
   scale: number[];
   zIndex: number[],
   length: number,
 };
-type animeType = {
-  targets: HTMLDivElement,
-  translateY?: number,
-  scale?: number,
-  easing: string,
-  opacity?: number,
-  duration: number
-}
+
 let list: cardBoxItem[] = reactive([])
+const showBoxItem= ref(true)
 let carouseInfo = reactive<CarouseInfo>({
   drift: [],
   scale: [],
@@ -50,14 +41,29 @@ let isMoving = false
 const carouselRef = ref();
 const emit = defineEmits<{
   cardClick: [missionItem: cardBoxItem],
-  upDateData:[]
+  upDateData: []
 }>()
-watch(() => props.missionList, (newvalue, oldvalue) => {
-  if (newvalue.length) {
-    list = operationList(props.missionList)
+const { fileList } = storeToRefs(store)
+watch(() => fileList, (newvalue, oldvalue) => {
+  showBoxItem.value  = false
+  if (newvalue.value.length) {
+    let nowList = operationList(fileList.value)
+    list = list.splice(0,nowList.length - list.length)
+    for(let i in nowList){
+      list[i] = nowList[i]
+    }
   }
+  console.log(`watch is edit over`,list.length)
+  showBoxItem.value = true
 }, {
-  deep: true
+  deep: true,
+})
+onMounted(() => {
+  // let nowList = operationList(fileList.value)
+  //   for(let i in nowList){
+  //     list.push(nowList[i])
+  //   }
+
 })
 //拼接样式，缩小与放大化
 const computedStyle = (item: cardBoxItem, index: number) => {
@@ -71,14 +77,17 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
   let array: any = []
   let drift = 115
   let scale = 1
-  for (let i in missionList as Array<missTypeObject>) {
-    array[i] = missionList[i]
+  let filterList = (missionList as Array<missTypeObject>).filter(e => {
+    return e.completionStatus !== 'complete'
+  })
+  for (let i in filterList) {
+    array[i] = filterList[i]
     array[i].drift = drift
     carouseInfo.drift[i] = drift
     array[i].scale = scale
     carouseInfo.scale[i] = scale
-    array[i].timeDetail = operationTime(missionList[i].time).days
-    array[i].type = operationTime(missionList[i].time).delayType
+    array[i].timeDetail = operationTime(parseInt(filterList[i].time)).days
+    array[i].type = operationTime(parseInt(filterList[i].time)).delayType
     carouseInfo.zIndex[i] = parseInt(i) + 1
     drift -= 25
     scale -= 0.05
@@ -86,7 +95,6 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
   carouseInfo.drift = carouseInfo.drift.reverse()
   carouseInfo.scale = carouseInfo.scale.reverse()
   carouseInfo.length = carouseInfo.drift.length
-  console.log(array)
   return array.reverse()
 }
 const cardClick = (e: cardBoxItem) => {
@@ -98,9 +106,9 @@ const animeOperation = async (arrowType: string) => {
   const scale = arrayOperation(carouseInfo.scale, arrowType)
   const zIndex = arrayOperation(carouseInfo.zIndex, arrowType)
   const domList = Array.from(carouselRef.value.children)
-
+  console.log(domList)
   domList.forEach((item, index) => {
-    //向下滚动
+    //向下滚动，且是第一个
     if (zIndex[index] === 1 && arrowType === 'down') {
       //处理第一个，需要先放大显示出好像小时然后隐藏
       (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
@@ -124,6 +132,7 @@ const animeOperation = async (arrowType: string) => {
         });
       }, 300);
     }
+    //向上移动，且是最后一个
     else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
       (item as HTMLDivElement).style.zIndex = '0';
       anime({
@@ -164,6 +173,7 @@ const animeOperation = async (arrowType: string) => {
       }, 200)
     }
     else {
+      console.log(zIndex[index]);
       (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
       anime({
         targets: item as HTMLDivElement,
@@ -175,13 +185,16 @@ const animeOperation = async (arrowType: string) => {
     }
   });
 }
+const animeOperationDisapear = async () => {
+}
+//根据不同的方向筛选出后续的数组
 const arrayOperation = (val: number[], type: string) => {
   const target = type === 'down' ? val.shift() : val.pop();
   type === 'down' ? val.push(target!) : val.unshift(target!);
   return val;
 }
 const updateData = async () => {
-  console.log(`boxlist`)
+  store.getFileList()
   emit('upDateData')
 }
 //鼠标滚动

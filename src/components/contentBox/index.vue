@@ -1,11 +1,12 @@
 <template>
   <div class="contentBox-root">
-    <BoxList @card-click="cardClick" :missionList="missionList" @up-date-data="updateData"></BoxList>
+    <BoxList @card-click="cardClick"  @up-date-data="updateData"></BoxList>
     <detailBox v-if="showDetailBox" @detail-click="detailClick" :mission-detail="missionDetail"></detailBox>
   </div>
 </template>
 
 <script setup lang="ts">
+import { mainStore } from '@/store';
 import BoxList from './boxList/index.vue'
 import detailBox from './detailBox/index.vue'
 import { cardBoxItem } from '@/type';
@@ -14,23 +15,12 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed, Ref }
 /**
 * 数据部分
 */
+const store = mainStore()
 let missionDetail: cardBoxItem | any = reactive({})
-const props = defineProps<{
-  update: boolean
-}>()
+
 let showDetailBox = ref(false)
-let missionList: Ref<Array<missTypeObject | any>> = ref([])
 onBeforeMount(async () => {
   updateData()
-  missionList.value = await resolveFile()
-})
-watch(() => props.update, async (newvalue, oldvalue) => {
-  if (newvalue === true) {
-    // missionList.value = await resolveFile()
-    updateData()
-  }
-}, {
-  immediate: false
 })
 //点击卡片进行显示细节
 const cardClick = (e: cardBoxItem) => {
@@ -49,19 +39,7 @@ const detailClick = () => {
   }, 300)
 }
 const updateData = async () => {
-  console.log(`contentbox`)
-  missionList.value = await resolveFile()
-  console.log(`update data done`)
-}
-//解析本地文件
-const resolveFile = async function (): Promise<any[]> {
-  const res = await (window as any).electronAPI.readFile()
-  console.log(res)
-  //如果获取到缓存文件，则进行展示
-  if (res) {
-    return res
-  }
-  return []
+  store.getFileList()
 }
 </script>
 <style scoped lang='less'>

@@ -66,8 +66,6 @@ const computedClass = computed(() => {
 })
 onBeforeMount(() => {
 })
-onMounted(() => {
-})
 watchEffect(() => {
 })
 
@@ -93,7 +91,8 @@ const handleclickToDone = async () => {
   background-color: #f7f9fb;
   border-radius: 10px;
   margin-left: -110px;
-  box-shadow: 1px -1px 20px -5px rgba(50, 50, 73, 0.4), 0 1px 1px -1px rgba(50, 50, 73, 0.3);
+  box-shadow: 1px -2px 20px -5px rgba(50, 50, 73, 0.4), 0 1px 1px -1px rgba(50, 50, 73, 0.3);
+  
   left: 50%;
   padding: @contentPadding @cardPadding;
   flex-direction: column;
