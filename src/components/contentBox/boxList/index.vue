@@ -52,8 +52,9 @@ watch(() => fileList, (newvalue, oldvalue) => {
   showBoxItem.value = false
   if (newvalue.value.length && !upDateFlag.value) {
     console.log(`进行初始化逻辑`)
-    //查找出变更项并直接进行置换
+    //直接初始化
     let nowlist = operationList(fileList.value)
+    aniConfig.generateList(fileList.value.length)
     for (let i in nowlist) {
       list[i] = nowlist[i]
     }
@@ -63,10 +64,6 @@ watch(() => fileList, (newvalue, oldvalue) => {
     console.log(`进入置换逻辑`)
     arrayResonse(newvalue.value, list)
     store.clearUpdateFlag()
-    // for(let i in nowlist){
-    //   list[i] = nowlist[i]
-    // }
-    // list.length = nowlist.length
   }
   else if (newvalue.value.length === 0) {
     console.log(`进入判断`)
@@ -104,11 +101,7 @@ const operationList = function (missionList: Array<missTypeObject | any>): cardB
     drift -= 25
     scale -= 0.05
   }
-  // carouseInfo.drift = carouseInfo.drift.reverse()
-  // carouseInfo.scale = carouseInfo.scale.reverse()
-  // carouseInfo.length = carouseInfo.drift.length
-  console.log(carouseInfo)
-  aniConfig.generateList(missionList.length)
+  
   return array.reverse()
 }
 const cardClick = (e: cardBoxItem) => {
@@ -118,7 +111,6 @@ const cardClick = (e: cardBoxItem) => {
 //滚动动画
 const animeOperation = async (arrowType: string) => {
   aniConfig.animationList(arrowType)
-
   const domList = Array.from(carouselRef.value.children)
   domList.forEach((item, index) => {
     //获取zindex等参数
@@ -227,7 +219,6 @@ const handleMouseEvent = throttle((e: any) => {
 }, 1000)
 //观察是减少还是增加
 const arrayResonse = (newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[]) => {
-
   //判断是数组减少了，在数组中找出删掉的数组进行裁剪
   if (newvalue.length < oldvalue.length) {
     console.log(oldvalue)
@@ -239,13 +230,9 @@ const arrayResonse = (newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[
       return !includes
     })
     const index = oldvalue.findIndex(item => item.id === result[0].id)
-    console.log(`index=${index}`)
-    carouseInfo.drift = []
-    carouseInfo.length = 0
-    carouseInfo.zIndex = []
     oldvalue.splice(index, 1)
     const resultList = operationList(oldvalue)
-
+    aniConfig.rebuildList('reduce')
     console.log(resultList)
   }
   //判断是数组增加了，在数组中找出当前的下标为1者在前方 进行递增

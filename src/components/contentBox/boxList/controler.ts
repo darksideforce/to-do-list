@@ -2,8 +2,10 @@ import { missTypeObject } from "@/type"
 
 //为了方便动画的执行，需要创建一个类来动态的监听
 const driftConfig = [115, 90, 65, 40, 15, -10, -35]
+//sampleconfig = [15,40,65,90,115] => [40,65,90,115]
 const scaleConfig = [1, 0.95, 0.9, 0.85, 0.80, 0.75, 0.70, 0.65]
 type configName = 'drift' | 'zIndex' | 'scale'
+type rebuildType = 'reduce' | 'add'
 export class animationConfig {
     drift: any[]
     zIndex: any[]
@@ -27,8 +29,22 @@ export class animationConfig {
         }
     }
     //重新构建动画参数
-    rebuildList(index: number) {
-
+    rebuildList(type:rebuildType) {
+        //找出当前链条头部，且找出缺失项
+        if(type === 'reduce'){
+            //只处理超出2个以上的项目减少的情况
+            if(this.len - 1 <= 1){
+            }
+            else{
+                const lastValue = driftConfig[this.len]
+                const lastIndex= this.drift.findIndex(item=>item===lastValue)
+                console.log(`寻找到的需要剔除的lastindex为${lastIndex}`)
+                this.drift.splice(lastIndex,1)
+                this.zIndex.splice(lastIndex,1)
+                this.scale.splice(lastIndex,1)
+                this.len = this.zIndex.length
+            }
+        }
     }
     //获取参数，根据index等来获取参数
     getConfig(index: number, type: configName) {
