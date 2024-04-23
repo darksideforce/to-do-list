@@ -20,7 +20,7 @@ let missionDetail: cardBoxItem | any = reactive({})
 
 let showDetailBox = ref(false)
 onBeforeMount(async () => {
-  updateData()
+  store.getFileList()
 })
 //点击卡片进行显示细节
 const cardClick = (e: cardBoxItem) => {
@@ -39,7 +39,7 @@ const detailClick = () => {
   }, 300)
 }
 const updateData = async () => {
-  store.getFileList()
+  store.updateFileList()
 }
 </script>
 <style scoped lang='less'>

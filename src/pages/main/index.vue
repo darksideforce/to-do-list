@@ -18,7 +18,7 @@ import MainTitle from '../../components/mainTitle/index.vue'
 import contentBox from '../../components/contentBox/index.vue'
 import addpage from '../../components/addpage/index.vue'
 
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { ref} from 'vue';
 import { mainStore } from '@/store';
 /**
 * 数据部分

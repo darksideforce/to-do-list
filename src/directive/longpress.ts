@@ -26,8 +26,7 @@ export const LongPress: ObjectDirective = {
       const cancel = (e: MouseEvent | TouchEvent) => {
         e.stopPropagation()
         if (timer !== null) {
-          clearTimeout(timer)
-          console.log(timer);//定时器默认返回一个随机的number 这个number的值是这个定时器的id
+          clearTimeout(timer)//定时器默认返回一个随机的number 这个number的值是这个定时器的id
           timer = null
         }
       }

@@ -7,23 +7,28 @@
       <p>{{ titleMessage }}</p>
     </div>
     <div class="right" @click="handleclickToAdd">
-      <SvgIcon :name="type?'close':'add'" color="primary" width="large" height="large"></SvgIcon>
+      <SvgIcon :name="isAddIng?'close':'add'" color="primary" width="large" height="large"></SvgIcon>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
+import { mainStore } from '@/store';
+import { ref, onBeforeMount, onMounted } from 'vue';
 const emit = defineEmits<{
   titleClick: [type:boolean]
 }>()
 defineProps<{ titleMessage: string }>()
+const store = mainStore()
+import { storeToRefs } from "pinia";
+
 /**
 * 数据部分
 */
-const type = ref(false)
+// const type = ref(false)
 const allowClick = ref(true)
+const { isAddIng } = storeToRefs(store)
 onBeforeMount(() => {
 
 })
@@ -31,13 +36,13 @@ onMounted(() => {
 
 })
 const handleclickToAdd = ()=>{
-  if(type.value){
-    type.value = false
-    emit('titleClick',type.value)
+  if(isAddIng.value){
+    store.changeAddTag(false)
+    emit('titleClick',isAddIng.value)
   }
   else{
-    type.value = true
-    emit('titleClick',type.value)
+    store.changeAddTag(true)
+    emit('titleClick',isAddIng.value)
   }
   allowClick.value = false
   setTimeout(()=>{

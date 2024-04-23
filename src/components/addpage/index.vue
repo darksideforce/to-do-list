@@ -34,7 +34,9 @@ import clickButton from '../clickButton/index.vue'
 import { ref, reactive, onBeforeMount, onMounted, watchEffect, computed } from 'vue';
 import { missTypeObject } from '../../type/missionAdd';
 import { rulesMap } from '../../type/missionAdd/config'
+import { mainStore } from '@/store';
 
+const store = mainStore()
 /**
 * 数据部分
 */
@@ -91,8 +93,8 @@ const handleclickSubmit = () => {
     else {
       projectObject.createTime = new Date().getTime();
       const result = await (window as any).electronAPI.createFile(JSON.stringify(projectObject))
-      console.log(`result=${result}`)
       if (result) {
+        store.changeAddTag(false)
         emit('successCreated')
       }
 

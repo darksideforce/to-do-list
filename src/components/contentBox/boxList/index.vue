@@ -1,5 +1,5 @@
 <template>
-  <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef" v-if="showBoxItem">
+  <div class="boxlist-root" @mousewheel="handleMouseEvent" ref="carouselRef">
     <BoxItem class="springbox" v-for="(item, index) in list" :cardDetail="item" :index="index"
       @cardClick="cardClick(item)" @card-finish="updateData" :style="computedStyle(item, index)"></BoxItem>
   </div>
@@ -15,6 +15,7 @@ import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed } from
 import anime from 'animejs';
 import { storeToRefs } from "pinia";
 import { mainStore } from "@/store"
+import { animationConfig } from './controler';
 
 const store = mainStore();
 /**
@@ -30,7 +31,9 @@ type CarouseInfo = {
 };
 
 let list: cardBoxItem[] = reactive([])
-const showBoxItem= ref(true)
+const showBoxItem = ref(true)
+
+const aniConfig = new animationConfig()
 let carouseInfo = reactive<CarouseInfo>({
   drift: [],
   scale: [],
@@ -43,26 +46,37 @@ const emit = defineEmits<{
   cardClick: [missionItem: cardBoxItem],
   upDateData: []
 }>()
-const { fileList } = storeToRefs(store)
+const { fileList, upDateFlag } = storeToRefs(store)
 watch(() => fileList, (newvalue, oldvalue) => {
-  showBoxItem.value  = false
-  if (newvalue.value.length) {
-    let nowList = operationList(fileList.value)
-    list = list.splice(0,nowList.length - list.length)
-    for(let i in nowList){
-      list[i] = nowList[i]
+  //由于数组的变更动画等操作，index并不是视图所示的位置，所以需要查找出index并在指定位置进行删除
+  showBoxItem.value = false
+  if (newvalue.value.length && !upDateFlag.value) {
+    console.log(`进行初始化逻辑`)
+    //查找出变更项并直接进行置换
+    let nowlist = operationList(fileList.value)
+    for (let i in nowlist) {
+      list[i] = nowlist[i]
     }
+    list.length = nowlist.length
   }
-  console.log(`watch is edit over`,list.length)
+  else if (newvalue.value.length && upDateFlag.value) {
+    console.log(`进入置换逻辑`)
+    arrayResonse(newvalue.value, list)
+    store.clearUpdateFlag()
+    // for(let i in nowlist){
+    //   list[i] = nowlist[i]
+    // }
+    // list.length = nowlist.length
+  }
+  else if (newvalue.value.length === 0) {
+    console.log(`进入判断`)
+    list.length = 0
+  }
   showBoxItem.value = true
 }, {
   deep: true,
 })
 onMounted(() => {
-  // let nowList = operationList(fileList.value)
-  //   for(let i in nowList){
-  //     list.push(nowList[i])
-  //   }
 
 })
 //拼接样式，缩小与放大化
@@ -74,44 +88,48 @@ const computedStyle = (item: cardBoxItem, index: number) => {
 }
 //方法，将传入的数组处理成展示用的列表
 const operationList = function (missionList: Array<missTypeObject | any>): cardBoxItem[] {
+
   let array: any = []
   let drift = 115
   let scale = 1
-  let filterList = (missionList as Array<missTypeObject>).filter(e => {
-    return e.completionStatus !== 'complete'
-  })
-  for (let i in filterList) {
-    array[i] = filterList[i]
+  for (let i in missionList as Array<missTypeObject>) {
+    array[i] = missionList[i]
     array[i].drift = drift
     carouseInfo.drift[i] = drift
     array[i].scale = scale
     carouseInfo.scale[i] = scale
-    array[i].timeDetail = operationTime(parseInt(filterList[i].time)).days
-    array[i].type = operationTime(parseInt(filterList[i].time)).delayType
-    carouseInfo.zIndex[i] = parseInt(i) + 1
+    array[i].timeDetail = operationTime(parseInt(missionList[i].time)).days
+    array[i].type = operationTime(parseInt(missionList[i].time)).delayType
+    // carouseInfo.zIndex[i] = parseInt(i) + 1
     drift -= 25
     scale -= 0.05
   }
-  carouseInfo.drift = carouseInfo.drift.reverse()
-  carouseInfo.scale = carouseInfo.scale.reverse()
-  carouseInfo.length = carouseInfo.drift.length
+  // carouseInfo.drift = carouseInfo.drift.reverse()
+  // carouseInfo.scale = carouseInfo.scale.reverse()
+  // carouseInfo.length = carouseInfo.drift.length
+  console.log(carouseInfo)
+  aniConfig.generateList(missionList.length)
   return array.reverse()
 }
 const cardClick = (e: cardBoxItem) => {
+  console.log(e)
   emit('cardClick', e)
 }
 //滚动动画
 const animeOperation = async (arrowType: string) => {
-  const drift = arrayOperation(carouseInfo.drift, arrowType)
-  const scale = arrayOperation(carouseInfo.scale, arrowType)
-  const zIndex = arrayOperation(carouseInfo.zIndex, arrowType)
+  aniConfig.animationList(arrowType)
+
   const domList = Array.from(carouselRef.value.children)
-  console.log(domList)
   domList.forEach((item, index) => {
+    //获取zindex等参数
+    const zIndex = aniConfig.getConfig(index,'zIndex')
+    const scale = aniConfig.getConfig(index,'scale')
+    const drift = aniConfig.getConfig(index,'drift')
+    const len = aniConfig.len
     //向下滚动，且是第一个
-    if (zIndex[index] === 1 && arrowType === 'down') {
+    if (zIndex=== 1 && arrowType === 'down') {
       //处理第一个，需要先放大显示出好像小时然后隐藏
-      (item as HTMLDivElement).style.zIndex = (carouseInfo.length + 2).toString();
+      (item as HTMLDivElement).style.zIndex = (len + 2).toString();
       anime({
         targets: item as HTMLDivElement,
         translateY: 140,
@@ -121,11 +139,11 @@ const animeOperation = async (arrowType: string) => {
         duration: 300
       });
       setTimeout(() => {
-        (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+        (item as HTMLDivElement).style.zIndex = zIndex.toString();
         anime({
           targets: item as HTMLDivElement,
-          translateY: drift[index],
-          scale: scale[index],
+          translateY: drift,
+          scale: scale,
           easing: 'linear',
           opacity: 1,
           duration: 500
@@ -133,7 +151,7 @@ const animeOperation = async (arrowType: string) => {
       }, 300);
     }
     //向上移动，且是最后一个
-    else if (zIndex[index] === carouseInfo.length && arrowType === 'up') {
+    else if (zIndex === len && arrowType === 'up') {
       (item as HTMLDivElement).style.zIndex = '0';
       anime({
         targets: item as HTMLDivElement,
@@ -153,7 +171,7 @@ const animeOperation = async (arrowType: string) => {
           duration: 100
         })
         setTimeout(() => {
-          (item as HTMLDivElement).style.zIndex = zIndex[index].toString();
+          (item as HTMLDivElement).style.zIndex = zIndex.toString();
           anime({
             targets: item as HTMLDivElement,
             opacity: 0.5,
@@ -162,8 +180,8 @@ const animeOperation = async (arrowType: string) => {
           setTimeout(() => {
             anime({
               targets: item as HTMLDivElement,
-              translateY: drift[index],
-              scale: scale[index],
+              translateY: drift,
+              scale: scale,
               easing: 'linear',
               opacity: 1,
               duration: 500
@@ -173,12 +191,11 @@ const animeOperation = async (arrowType: string) => {
       }, 200)
     }
     else {
-      console.log(zIndex[index]);
-      (item as HTMLDivElement).style.zIndex = zIndex[index].toString()
+      (item as HTMLDivElement).style.zIndex = zIndex.toString()
       anime({
         targets: item as HTMLDivElement,
-        translateY: drift[index],
-        scale: scale[index],
+        translateY: drift,
+        scale: scale,
         easing: 'linear',
         duration: 400,
       });
@@ -194,21 +211,62 @@ const arrayOperation = (val: number[], type: string) => {
   return val;
 }
 const updateData = async () => {
-  store.getFileList()
+  // store.getFileList()
   emit('upDateData')
 }
 //鼠标滚动
 const handleMouseEvent = throttle((e: any) => {
   if (!isMoving) {
-    if (e.deltaY > 0) {
+    if (e.deltaY > 0 && list.length > 1) {
       animeOperation('down')
     }
-    else {
+    else if (list.length > 1) {
       animeOperation('up')
     }
   }
 }, 1000)
+//观察是减少还是增加
+const arrayResonse = (newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[]) => {
 
+  //判断是数组减少了，在数组中找出删掉的数组进行裁剪
+  if (newvalue.length < oldvalue.length) {
+    console.log(oldvalue)
+    console.log(`进入了减少判断`)
+    const result = oldvalue.filter(item => {
+      const includes = newvalue.find(items => {
+        return items.id == item.id
+      })
+      return !includes
+    })
+    const index = oldvalue.findIndex(item => item.id === result[0].id)
+    console.log(`index=${index}`)
+    carouseInfo.drift = []
+    carouseInfo.length = 0
+    carouseInfo.zIndex = []
+    oldvalue.splice(index, 1)
+    const resultList = operationList(oldvalue)
+
+    console.log(resultList)
+  }
+  //判断是数组增加了，在数组中找出当前的下标为1者在前方 进行递增
+  else if (newvalue.length > oldvalue.length) {
+    console.log(`进入了增加判断`)
+    return 0
+  }
+  else {
+    return 1
+  }
+
+}
+const catchValue = (configList:number[]):number=>{
+  if(list.length  < 7){
+    
+  }
+  else{
+
+  }
+  return 0
+}
 //处理时间为将过时或者离结束还剩XX，或者以及过时
 //通知父组件更新数据
 

@@ -45,6 +45,7 @@ const props = defineProps({
         content: '',
         drift: 10,
         scale: 1,
+
       }
     }
   },
@@ -75,6 +76,7 @@ const handleClickCardToDetail = () => {
 const handleclickToDone = async () => {
   try {
     const res = await (window as any).electronAPI.finishFile(JSON.stringify(cardDetail))
+    console.log(cardDetail)
     console.log(`done`)
     emit('cardFinish')
   }
@@ -82,6 +84,7 @@ const handleclickToDone = async () => {
     console.log(`finish mission fail ,fail = ${e.message}`)
   }
 }
+
 </script>
 <style scoped lang='less'>
 .box-item-root {
