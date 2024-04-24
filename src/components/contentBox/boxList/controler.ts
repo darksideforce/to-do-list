@@ -10,7 +10,7 @@ export class animationConfig {
     drift: any[]
     zIndex: any[]
     scale: any[]
-    len:number
+    len: number
     constructor() {
         this.drift = []
         this.zIndex = []
@@ -19,9 +19,9 @@ export class animationConfig {
     }
     //先不做数组大于7的判断
     generateList(len: number) {
-        this.drift = driftConfig.slice(0,len)
+        this.drift = driftConfig.slice(0, len)
         this.drift = this.drift.reverse()
-        this.scale = scaleConfig.slice(0,len)
+        this.scale = scaleConfig.slice(0, len)
         this.scale = this.scale.reverse()
         this.len = len
         for (let i = 0; i < len; i++) {
@@ -29,19 +29,23 @@ export class animationConfig {
         }
     }
     //重新构建动画参数
-    rebuildList(type:rebuildType) {
+    rebuildList(type: rebuildType) {
         //找出当前链条头部，且找出缺失项
-        if(type === 'reduce'){
+        if (type === 'reduce') {
             //只处理超出2个以上的项目减少的情况
-            if(this.len - 1 <= 1){
+            if (this.len - 1 <= 1) {
             }
-            else{
-                const lastValue = driftConfig[this.len]
-                const lastIndex= this.drift.findIndex(item=>item===lastValue)
+            else {
+                const lastValue = driftConfig[this.len -1]
+                console.log(lastValue)
+                console.log(this.drift)
+                const lastIndex = this.drift.findIndex(item => {
+                    return item === lastValue
+                })
                 console.log(`寻找到的需要剔除的lastindex为${lastIndex}`)
-                this.drift.splice(lastIndex,1)
-                this.zIndex.splice(lastIndex,1)
-                this.scale.splice(lastIndex,1)
+                this.drift.splice(lastIndex, 1)
+                this.zIndex.splice(lastIndex, 1)
+                this.scale.splice(lastIndex, 1)
                 this.len = this.zIndex.length
             }
         }

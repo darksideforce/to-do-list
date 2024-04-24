@@ -11,7 +11,7 @@ import { cardBoxItem } from '@/type/index';
 import { missTypeObject } from '@/type/missionAdd';
 import BoxItem from './boxItem/index.vue';
 import { operationTime } from '@/utils'
-import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed } from 'vue';
+import { ref, reactive, toRefs, onBeforeMount, onMounted, watch, computed, nextTick } from 'vue';
 import anime from 'animejs';
 import { storeToRefs } from "pinia";
 import { mainStore } from "@/store"
@@ -117,6 +117,10 @@ const animeOperation = async (arrowType: string) => {
     const zIndex = aniConfig.getConfig(index,'zIndex')
     const scale = aniConfig.getConfig(index,'scale')
     const drift = aniConfig.getConfig(index,'drift')
+    console.log(`index=${index}`)
+    console.log(zIndex)
+    console.log(scale)
+    console.log(drift)
     const len = aniConfig.len
     //向下滚动，且是第一个
     if (zIndex=== 1 && arrowType === 'down') {
@@ -218,11 +222,10 @@ const handleMouseEvent = throttle((e: any) => {
   }
 }, 1000)
 //观察是减少还是增加
-const arrayResonse = (newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[]) => {
+const arrayResonse = async(newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[]) => {
   //判断是数组减少了，在数组中找出删掉的数组进行裁剪
   if (newvalue.length < oldvalue.length) {
-    console.log(oldvalue)
-    console.log(`进入了减少判断`)
+
     const result = oldvalue.filter(item => {
       const includes = newvalue.find(items => {
         return items.id == item.id
@@ -233,7 +236,8 @@ const arrayResonse = (newvalue: Array<cardBoxItem | any>, oldvalue: cardBoxItem[
     oldvalue.splice(index, 1)
     const resultList = operationList(oldvalue)
     aniConfig.rebuildList('reduce')
-    console.log(resultList)
+    await nextTick
+    animeOperation('down')
   }
   //判断是数组增加了，在数组中找出当前的下标为1者在前方 进行递增
   else if (newvalue.length > oldvalue.length) {
