@@ -31,7 +31,7 @@
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.2",
     "@vitejs/plugin-vue": "^5.0.1",
-    "electron": "^28.1.0",
+    "electron": "^30.0.9",
     "electron-builder": "^24.9.1",
     "fast-glob": "^3.3.2",
     "tree-kill": "^1.2.2",
